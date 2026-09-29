@@ -10,7 +10,7 @@ class DierenController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://localhost:8080/api/dieren');
+        $response = Http::get(config('services.backend.url').'/api/dieren');
         $dieren = $response->json();
 
         return view('dieren', compact('dieren'));
