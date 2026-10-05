@@ -2,10 +2,12 @@ package com.example.pagestock.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Book {
@@ -24,11 +26,10 @@ public class Book {
 
     // private Long category_id
 
-    //private ?list? auteurs
+    @ManyToMany(mappedBy = "books")
+    private List<Author> authors;
 
     // private Review review
-
-    // private ?list? users
 
     // private ?list? orders
 
