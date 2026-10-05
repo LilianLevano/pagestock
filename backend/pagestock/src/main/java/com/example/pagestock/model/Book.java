@@ -1,8 +1,6 @@
 package com.example.pagestock.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,7 +22,10 @@ public class Book {
     @NotNull(message = "Price can not be null.")
     private float price;
 
-    // private Long category_id
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @ManyToMany(mappedBy = "books")
     private List<Author> authors;
@@ -97,5 +98,21 @@ public class Book {
 
     public void setStock(Long stock) {
         this.stock = stock;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
     }
 }
