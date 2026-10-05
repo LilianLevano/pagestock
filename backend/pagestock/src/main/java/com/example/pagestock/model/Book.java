@@ -30,7 +30,8 @@ public class Book {
     @ManyToMany(mappedBy = "books")
     private List<Author> authors;
 
-    // private Review review
+    @OneToMany(mappedBy = "reviewed_book")
+    private List<Review> reviews;
 
     // private ?list? orders
 
@@ -114,5 +115,13 @@ public class Book {
 
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }
