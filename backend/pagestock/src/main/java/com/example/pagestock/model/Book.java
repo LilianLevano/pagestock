@@ -49,13 +49,11 @@ public class Book {
     }
 
 
-    public Book(Long ISBN_number, String title, String description, float price, Category category, List<Author> authors, LocalDate publicationDate, Long stock) {
+    public Book(Long ISBN_number, String title, String description, float price, LocalDate publicationDate, Long stock) {
         this.ISBN_number = ISBN_number;
         this.title = title;
         this.description = description;
         this.price = price;
-        this.category = category;
-        this.authors = authors;
         this.publicationDate = publicationDate;
         this.stock = stock;
     }
