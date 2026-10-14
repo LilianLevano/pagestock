@@ -33,7 +33,11 @@ public class Book {
     @OneToMany(mappedBy = "reviewed_book")
     private List<Review> reviews;
 
-    // private ?list? orders
+    @ManyToMany(mappedBy = "booksInOrder")
+    private List<Order> orders;
+
+
+    // private String image_path
 
     @NotNull(message = "Publication date can not be null.")
     private LocalDate publicationDate;
@@ -44,11 +48,14 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long ISBN_number, String title, String description, float price, LocalDate publicationDate, Long stock) {
+
+    public Book(Long ISBN_number, String title, String description, float price, Category category, List<Author> authors, LocalDate publicationDate, Long stock) {
         this.ISBN_number = ISBN_number;
         this.title = title;
         this.description = description;
         this.price = price;
+        this.category = category;
+        this.authors = authors;
         this.publicationDate = publicationDate;
         this.stock = stock;
     }
@@ -123,5 +130,13 @@ public class Book {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
