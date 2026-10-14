@@ -12,7 +12,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // private user
+    @ManyToOne
+    private User user;
 
     @ManyToMany
     @JoinTable(
@@ -54,5 +55,21 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Book> getBooksInOrder() {
+        return booksInOrder;
+    }
+
+    public void setBooksInOrder(List<Book> booksInOrder) {
+        this.booksInOrder = booksInOrder;
     }
 }

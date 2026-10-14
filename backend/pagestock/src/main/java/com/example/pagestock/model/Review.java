@@ -25,8 +25,8 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book reviewed_book;
 
-    // private User user
-
+    @ManyToOne
+    private User user;
 
     public Review() {
     }
@@ -75,5 +75,13 @@ public class Review {
 
     public void setReviewed_book(Book reviewed_book) {
         this.reviewed_book = reviewed_book;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
