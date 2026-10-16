@@ -35,20 +35,24 @@ public class CategoryService {
 
     public CategoryResponse save(CategoryRequest request) {
 
-        if (categoryRepository.existsByNameIgnoreCase(request.name())) {
-            throw new CategoryAlreadyExistsException(request.name());
+        String cleanName = request.name().trim();
+
+        if (categoryRepository.existsByNameIgnoreCase(cleanName)) {
+            throw new CategoryAlreadyExistsException(cleanName);
         }
-        Category category = new Category(request.name());
+        Category category = new Category(cleanName);
         return toResponse(categoryRepository.save(category));
     }
 
     public Optional<CategoryResponse> update (CategoryRequest request, Long id) {
         return categoryRepository.findById(id).map(category ->  {
 
-            if (categoryRepository.existsByNameIgnoreCase(request.name())) {
-                throw new CategoryAlreadyExistsException(request.name());
+            String cleanName = request.name().trim();
+
+            if (categoryRepository.existsByNameIgnoreCaseAndIdNot(cleanName, id)) {
+                throw new CategoryAlreadyExistsException(cleanName);
             }
-            category.setName(request.name());
+            category.setName(cleanName);
             return toResponse(categoryRepository.save(category));
         });
     }
