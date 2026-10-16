@@ -3,6 +3,7 @@ package com.example.pagestock.controller;
 import com.example.pagestock.dto.category.CategoryRequest;
 import com.example.pagestock.dto.category.CategoryResponse;
 import com.example.pagestock.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +38,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> save(@RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> save(@Valid @RequestBody CategoryRequest categoryRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponse> update(@PathVariable Long id, @RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> update(@PathVariable Long id, @Valid @RequestBody CategoryRequest categoryRequest) {
         return categoryService.update(categoryRequest, id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
