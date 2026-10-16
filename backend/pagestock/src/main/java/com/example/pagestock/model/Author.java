@@ -2,7 +2,6 @@ package com.example.pagestock.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.List;
 
