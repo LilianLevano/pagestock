@@ -2,6 +2,7 @@ package com.example.pagestock.service;
 
 import com.example.pagestock.dto.book.BookRequest;
 import com.example.pagestock.dto.book.BookResponse;
+import com.example.pagestock.dto.book.BookUpdateRequest;
 import com.example.pagestock.model.Book;
 import com.example.pagestock.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class BookService {
         return toResponse(bookRepository.save(book));
     }
 
-    public Optional<BookResponse> update(BookRequest bookRequest, String isbnNumber) {
+    public Optional<BookResponse> update(BookUpdateRequest bookRequest, String isbnNumber) {
         return  bookRepository.findById(isbnNumber).map(book -> {
             book.setTitle(bookRequest.title());
             book.setDescription(bookRequest.description());

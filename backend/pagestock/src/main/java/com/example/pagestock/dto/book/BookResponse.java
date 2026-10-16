@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record BookResponse(
-        String ISBN_number,
+        String isbnNumber,
         String title,
         String description,
         BigDecimal price,

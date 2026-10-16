@@ -2,7 +2,9 @@ package com.example.pagestock.controller;
 
 import com.example.pagestock.dto.book.BookRequest;
 import com.example.pagestock.dto.book.BookResponse;
+import com.example.pagestock.dto.book.BookUpdateRequest;
 import com.example.pagestock.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +40,12 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<BookResponse> saveBook(@RequestBody BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> saveBook(@Valid @RequestBody BookRequest bookRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.save(bookRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookResponse> updateBook(@PathVariable String id, @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<BookResponse> updateBook(@PathVariable String id, @Valid @RequestBody BookUpdateRequest bookRequest) {
         return bookService.update(bookRequest, id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
