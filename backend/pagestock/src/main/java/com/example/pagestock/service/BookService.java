@@ -24,7 +24,7 @@ public class BookService {
         return bookRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public Optional<BookResponse> findById(Long id) {
+    public Optional<BookResponse> findById(String id) {
         return bookRepository.findById(id).map(this::toResponse);
     }
 
@@ -47,7 +47,7 @@ public class BookService {
         return toResponse(bookRepository.save(book));
     }
 
-    public Optional<BookResponse> update(BookRequest bookRequest, Long isbnNumber) {
+    public Optional<BookResponse> update(BookRequest bookRequest, String isbnNumber) {
         return  bookRepository.findById(isbnNumber).map(book -> {
             book.setTitle(bookRequest.title());
             book.setDescription(bookRequest.description());
@@ -58,7 +58,7 @@ public class BookService {
         });
     }
 
-    public boolean deleteById(Long id) {
+    public boolean deleteById(String id) {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
             return true;

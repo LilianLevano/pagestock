@@ -4,11 +4,12 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record BookRequest(
 
-        Long isbnNumber,
+        String isbnNumber,
 
         @NotBlank(message = "Title can not be empty.")
         String title,
@@ -17,7 +18,7 @@ public record BookRequest(
         String description,
 
         @NotNull(message = "Price can not be null.")
-        float price,
+        BigDecimal price,
 
         LocalDate publicationDate,
 

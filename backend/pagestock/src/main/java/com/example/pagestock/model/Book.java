@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class Book {
 
     @Id
-    private Long isbnNumber;
+    private String isbnNumber;
 
     @NotBlank(message = "Title can not be empty.")
     private String title;
@@ -20,7 +21,7 @@ public class Book {
     private String description;
 
     @NotNull(message = "Price can not be null.")
-    private float price;
+    private BigDecimal price;
 
 
     @ManyToOne
@@ -49,7 +50,7 @@ public class Book {
     }
 
 
-    public Book(Long ISBN_number, String title, String description, float price, LocalDate publicationDate, Long stock) {
+    public Book(String ISBN_number, String title, String description, BigDecimal price, LocalDate publicationDate, Long stock) {
         this.isbnNumber = ISBN_number;
         this.title = title;
         this.description = description;
@@ -58,11 +59,11 @@ public class Book {
         this.stock = stock;
     }
 
-    public Long getIsbnNumber() {
+    public String getIsbnNumber() {
         return isbnNumber;
     }
 
-    public void setIsbnNumber(Long ISBN_number) {
+    public void setIsbnNumber(String ISBN_number) {
         this.isbnNumber = ISBN_number;
     }
 
@@ -82,11 +83,11 @@ public class Book {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
