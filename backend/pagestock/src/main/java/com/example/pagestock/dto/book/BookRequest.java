@@ -27,7 +27,8 @@ public record BookRequest(
 
         Long stock,
 
-        Long category_id,
+        @NotNull
+        Long categoryId,
 
         Long[] author_ids
 

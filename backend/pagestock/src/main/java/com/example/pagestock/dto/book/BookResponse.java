@@ -1,5 +1,6 @@
 package com.example.pagestock.dto.book;
 
+import com.example.pagestock.dto.category.CategoryResponse;
 import com.example.pagestock.model.Author;
 import com.example.pagestock.model.Category;
 
@@ -13,5 +14,6 @@ public record BookResponse(
         String description,
         BigDecimal price,
         LocalDate publicationDate,
-        Long stock
+        Long stock,
+        CategoryResponse category
 ) { }

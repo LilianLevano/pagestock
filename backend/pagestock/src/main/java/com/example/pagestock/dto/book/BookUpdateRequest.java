@@ -22,7 +22,7 @@ public record BookUpdateRequest(
 
         Long stock,
 
-        Long category_id,
+        Long categoryId,
 
         Long[] author_ids
 
