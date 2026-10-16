@@ -1,4 +1,9 @@
 package com.example.pagestock.dto.category;
 
-public record CategoryRequest(String name) {
-}
+import jakarta.validation.constraints.NotBlank;
+
+public record CategoryRequest(
+
+        @NotBlank(message = "Name of a category can not be empty.")
+        String name
+) { }
