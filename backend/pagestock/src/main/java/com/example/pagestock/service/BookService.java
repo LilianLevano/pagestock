@@ -3,21 +3,27 @@ package com.example.pagestock.service;
 import com.example.pagestock.dto.book.BookRequest;
 import com.example.pagestock.dto.book.BookResponse;
 import com.example.pagestock.dto.book.BookUpdateRequest;
+import com.example.pagestock.dto.category.CategoryResponse;
+import com.example.pagestock.exceptions.BookAlreadyExistsException;
+import com.example.pagestock.exceptions.ItemNotFoundException;
 import com.example.pagestock.model.Book;
+import com.example.pagestock.model.Category;
 import com.example.pagestock.repository.BookRepository;
+import com.example.pagestock.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, CategoryRepository categoryRepository) {
         this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
     }
 
 
@@ -36,7 +42,7 @@ public class BookService {
     public BookResponse save(BookRequest bookRequest){
 
         if (bookRepository.existsById(bookRequest.isbnNumber())) {
-            throw new IllegalStateException("Book already exists: " + bookRequest.isbnNumber());
+            throw new BookAlreadyExistsException(bookRequest.isbnNumber());
         }
 
         Book book = new Book(bookRequest.isbnNumber(),
@@ -45,6 +51,9 @@ public class BookService {
                 bookRequest.price(),
                 bookRequest.publicationDate(),
                 bookRequest.stock());
+        book.setCategory(findCategoryByIdOrThrow(bookRequest.categoryId()));
+
+
         return toResponse(bookRepository.save(book));
     }
 
@@ -55,6 +64,7 @@ public class BookService {
             book.setPrice(bookRequest.price());
             book.setPublicationDate(bookRequest.publicationDate());
             book.setStock(bookRequest.stock());
+            book.setCategory(findCategoryByIdOrThrow(bookRequest.categoryId()));
             return toResponse(bookRepository.save(book));
         });
     }
@@ -67,6 +77,10 @@ public class BookService {
         return false;
     }
 
+    private Category findCategoryByIdOrThrow(Long id) {
+        return  categoryRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Category with id: " + id + " not found"));
+    }
+
     private BookResponse toResponse(Book book) {
         return new BookResponse(
                 book.getIsbnNumber(),
@@ -74,7 +88,8 @@ public class BookService {
                 book.getDescription(),
                 book.getPrice(),
                 book.getPublicationDate(),
-                book.getStock()
+                book.getStock(),
+                new CategoryResponse(book.getCategory().getId(), book.getCategory().getName())
         );
     }
 }
