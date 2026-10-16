@@ -11,7 +11,7 @@ import java.util.List;
 public class Book {
 
     @Id
-    private Long ISBN_number;
+    private Long isbnNumber;
 
     @NotBlank(message = "Title can not be empty.")
     private String title;
@@ -50,7 +50,7 @@ public class Book {
 
 
     public Book(Long ISBN_number, String title, String description, float price, LocalDate publicationDate, Long stock) {
-        this.ISBN_number = ISBN_number;
+        this.isbnNumber = ISBN_number;
         this.title = title;
         this.description = description;
         this.price = price;
@@ -58,12 +58,12 @@ public class Book {
         this.stock = stock;
     }
 
-    public Long getISBN_number() {
-        return ISBN_number;
+    public Long getIsbnNumber() {
+        return isbnNumber;
     }
 
-    public void setISBN_number(Long ISBN_number) {
-        this.ISBN_number = ISBN_number;
+    public void setIsbnNumber(Long ISBN_number) {
+        this.isbnNumber = ISBN_number;
     }
 
     public String getTitle() {

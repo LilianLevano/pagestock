@@ -13,7 +13,4 @@ public record BookResponse(
         float price,
         LocalDate publicationDate,
         Long stock
-) {
-
-
-}
+) { }

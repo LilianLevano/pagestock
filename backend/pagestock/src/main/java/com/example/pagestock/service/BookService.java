@@ -6,22 +6,39 @@ import com.example.pagestock.model.Book;
 import com.example.pagestock.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 @Service
 public class BookService {
 
-    BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
-    public Iterable<Book> findAll(){
-        return bookRepository.findAll();
+
+    public List<BookResponse> findAll() {
+        return bookRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    public Optional<BookResponse> findById(Long id) {
+        return bookRepository.findById(id).map(this::toResponse);
+    }
+
+    public List<BookResponse> findByTitle(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title).stream().map(this::toResponse).toList();
     }
 
     public BookResponse save(BookRequest bookRequest){
 
-        Book book = new Book(bookRequest.ISBN_number(),
+        if (bookRepository.existsById(bookRequest.isbnNumber())) {
+            throw new IllegalStateException("Book already exists: " + bookRequest.isbnNumber());
+        }
+
+        Book book = new Book(bookRequest.isbnNumber(),
                 bookRequest.title(),
                 bookRequest.description(),
                 bookRequest.price(),
@@ -30,9 +47,28 @@ public class BookService {
         return toResponse(bookRepository.save(book));
     }
 
+    public Optional<BookResponse> update(BookRequest bookRequest, Long isbnNumber) {
+        return  bookRepository.findById(isbnNumber).map(book -> {
+            book.setTitle(bookRequest.title());
+            book.setDescription(bookRequest.description());
+            book.setPrice(bookRequest.price());
+            book.setPublicationDate(bookRequest.publicationDate());
+            book.setStock(bookRequest.stock());
+            return toResponse(bookRepository.save(book));
+        });
+    }
+
+    public boolean deleteById(Long id) {
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
     private BookResponse toResponse(Book book) {
         return new BookResponse(
-                book.getISBN_number(),
+                book.getIsbnNumber(),
                 book.getTitle(),
                 book.getDescription(),
                 book.getPrice(),

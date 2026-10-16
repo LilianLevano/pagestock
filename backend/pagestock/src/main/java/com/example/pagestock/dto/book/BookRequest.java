@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record BookRequest(
 
-        Long ISBN_number,
+        Long isbnNumber,
 
         @NotBlank(message = "Title can not be empty.")
         String title,
