@@ -65,7 +65,7 @@ public class CategoryService {
 
     private CategoryResponse toResponse(Category category) {
         return new CategoryResponse(
-                category.getName()
+                 category.getId(), category.getName()
         );
     }
 
