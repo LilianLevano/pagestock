@@ -12,6 +12,7 @@ public class Category {
     private Long id;
 
     @NotBlank(message = "Name can not be empty.")
+    @Column(nullable = false, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "category")
