@@ -32,7 +32,8 @@ public record BookRequest(
         @NotNull(message = "Category can not be empty.")
         Long categoryId,
 
-        Long[] author_ids
+        @NotNull(message = "A book must have at least one author.")
+        Long[] authorIds
 
 
 ) { }
