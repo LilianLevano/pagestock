@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 public record BookUpdateRequest(
 
@@ -28,8 +29,8 @@ public record BookUpdateRequest(
         @NotNull(message = "Category can not be empty.")
         Long categoryId,
 
-        @NotNull(message = "A book must have at least one author.")
-        Long[] authorIds
+        @NotEmpty(message = "A book must have at least one author.")
+        Set<Long> authorIds
 
 
 ) { }

@@ -1,10 +1,12 @@
 package com.example.pagestock.dto.book;
 
+import com.example.pagestock.dto.author.AuthorResponse;
 import com.example.pagestock.dto.category.CategoryResponse;
 
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 public record BookResponse(
@@ -14,5 +16,6 @@ public record BookResponse(
         BigDecimal price,
         LocalDate publicationDate,
         Long stock,
-        CategoryResponse category
+        CategoryResponse category,
+        List<AuthorResponse> authors
 ) { }
