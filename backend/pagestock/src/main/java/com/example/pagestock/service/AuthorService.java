@@ -39,7 +39,7 @@ public class AuthorService {
     }
 
     public AuthorResponse save(AuthorRequest authorRequest) {
-        if (authorRepository.existsByNameEqualsIgnoreCase(authorRequest.name())){
+        if (authorRepository.existsByNameEqualsIgnoreCase(authorRequest.name().trim())){
             throw new AuthorAlreadyExistsException(authorRequest.name());
         }
         Author author = new Author(authorRequest.name().trim());

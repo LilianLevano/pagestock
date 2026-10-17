@@ -4,7 +4,6 @@ import com.example.pagestock.dto.author.AuthorRequest;
 import com.example.pagestock.dto.author.AuthorResponse;
 import com.example.pagestock.service.AuthorService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

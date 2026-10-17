@@ -3,7 +3,6 @@ package com.example.pagestock.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
