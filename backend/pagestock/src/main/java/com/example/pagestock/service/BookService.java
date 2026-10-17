@@ -13,6 +13,7 @@ import com.example.pagestock.model.Category;
 import com.example.pagestock.repository.AuthorRepository;
 import com.example.pagestock.repository.BookRepository;
 import com.example.pagestock.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -27,6 +28,7 @@ public class BookService {
     private final CategoryRepository categoryRepository;
     private final AuthorRepository authorRepository;
 
+    @Autowired
     public BookService(BookRepository bookRepository, CategoryRepository categoryRepository,  AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
         this.categoryRepository = categoryRepository;

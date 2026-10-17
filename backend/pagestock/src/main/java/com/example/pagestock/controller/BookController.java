@@ -17,12 +17,15 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
 
-    private BookService bookService;
+    private final BookService bookService;
 
     @Autowired
-    public void setBookService(BookService bookService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
+
+
+
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> findAllBooks() {

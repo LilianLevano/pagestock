@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 public class CategoryService {
 
-    private CategoryRepository categoryRepository;
-    private BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     public CategoryService(CategoryRepository categoryRepository,  BookRepository bookRepository) {

@@ -17,8 +17,8 @@ import java.util.Optional;
 @Service
 public class AuthorService {
 
-    private AuthorRepository authorRepository;
-    private BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     public AuthorService(AuthorRepository authorRepository,  BookRepository bookRepository) {
