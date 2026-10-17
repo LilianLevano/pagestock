@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/authors")
 public class AuthorController {
 
     private AuthorService authorService;
@@ -49,7 +49,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<AuthorResponse> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         if(!authorService.delete(id)) {
             return ResponseEntity.notFound().build();
         }
