@@ -3,7 +3,9 @@ package com.example.pagestock.service;
 import com.example.pagestock.dto.category.CategoryRequest;
 import com.example.pagestock.dto.category.CategoryResponse;
 import com.example.pagestock.exceptions.CategoryAlreadyExistsException;
+import com.example.pagestock.exceptions.CategoryNotEmptyException;
 import com.example.pagestock.model.Category;
+import com.example.pagestock.repository.BookRepository;
 import com.example.pagestock.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class CategoryService {
 
     private CategoryRepository categoryRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository,  BookRepository bookRepository) {
         this.categoryRepository = categoryRepository;
+        this.bookRepository = bookRepository;
     }
 
     public List<CategoryResponse> findAll() {
@@ -58,12 +62,18 @@ public class CategoryService {
     }
 
     public boolean deleteById(Long id) {
-        if (categoryRepository.existsById(id)) {
-            categoryRepository.deleteById(id);
-            return true;
+
+        if (!categoryRepository.existsById(id)) {
+            return false;
         }
 
-        return false;
+        if(bookRepository.existsByCategoryId(id)) {
+            throw new CategoryNotEmptyException(id, bookRepository.countByCategoryId(id));
+        }
+
+        categoryRepository.deleteById(id);
+        return true;
+
 
     }
 
