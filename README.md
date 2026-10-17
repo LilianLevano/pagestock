@@ -61,15 +61,15 @@ Gelaagde architectuur, opgedeeld per domein (catalog, user, reservation, review)
  
 ### Backend
  
-1. Maak een lege MySQL-database aan: `CREATE DATABASE pagestock;` **(NOG AAN TE VULLEN: echte naam van de database)**
-2. Kopieer in `backend/pagestock/src/main/resources/` het bestand `application.properties.example` naar `application.properties` en vul de MySQL-URL, gebruiker en wachtwoord in, evenals het JWT-geheim. **(NOG AAN TE VULLEN: voeg dit `.example`-bestand toe aan de repository, zonder echt wachtwoord.)**
+1. Maak een lege MySQL-database aan: `CREATE DATABASE pagestock;`
+2. Kopieer in `backend/pagestock/src/main/resources/` het bestand `application.properties.example` naar `application.properties` en vul de MySQL-URL, gebruiker en wachtwoord in, evenals het JWT-geheim.
 3. Starten:
 ```bash
 cd backend/pagestock
 ./mvnw spring-boot:run
 ```
  
-De API is bereikbaar op `http://localhost:8080` **(NOG AAN TE VULLEN: echte poort)**.
+De API is bereikbaar op `http://localhost:8080`
 
 ### Frontend
  
