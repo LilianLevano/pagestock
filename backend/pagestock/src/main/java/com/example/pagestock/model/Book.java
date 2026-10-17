@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Book {
@@ -28,8 +29,12 @@ public class Book {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToMany(mappedBy = "books")
-    private List<Author> authors;
+    @ManyToMany
+    @JoinTable(
+            name = "book_authors",
+            joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name="author_id")
+    )
+    private Set<Author> authors;
 
     @OneToMany(mappedBy = "reviewed_book")
     private List<Review> reviews;
@@ -115,11 +120,11 @@ public class Book {
         this.category = category;
     }
 
-    public List<Author> getAuthors() {
+    public Set<Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<Author> authors) {
+    public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
 

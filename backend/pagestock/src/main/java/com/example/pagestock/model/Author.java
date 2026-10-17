@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Author {
@@ -14,12 +15,8 @@ public class Author {
     @NotBlank(message = "Name can not be empty")
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-            name = "author_books",
-            joinColumns = @JoinColumn(name = "author_id"), inverseJoinColumns = @JoinColumn(name="book_id")
-    )
-    private List<Book> books;
+    @ManyToMany(mappedBy = "authors")
+    private Set<Book> books;
 
     public Author() {
     }
