@@ -49,17 +49,18 @@ public class CategoryService {
         return toResponse(categoryRepository.save(category));
     }
 
-    public Optional<CategoryResponse> update (CategoryRequest request, Long id) {
-        return categoryRepository.findById(id).map(category ->  {
+    public CategoryResponse update (CategoryRequest request, Long id) {
 
-            String cleanName = request.name().trim();
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Could not find category with id: " + id));
 
-            if (categoryRepository.existsByNameIgnoreCaseAndIdNot(cleanName, id)) {
-                throw new CategoryAlreadyExistsException(cleanName);
-            }
-            category.setName(cleanName);
-            return toResponse(categoryRepository.save(category));
-        });
+        String cleanName = request.name().trim();
+
+        if (categoryRepository.existsByNameIgnoreCaseAndIdNot(cleanName, id)) {
+            throw new CategoryAlreadyExistsException(cleanName);
+        }
+        category.setName(cleanName);
+        return toResponse(categoryRepository.save(category));
     }
 
     public void deleteById(Long id) {

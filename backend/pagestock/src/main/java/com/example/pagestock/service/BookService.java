@@ -67,17 +67,21 @@ public class BookService {
         return toResponse(bookRepository.save(book));
     }
 
-    public Optional<BookResponse> update(BookUpdateRequest bookRequest, String isbnNumber) {
-        return  bookRepository.findById(isbnNumber).map(book -> {
-            book.setTitle(bookRequest.title());
-            book.setDescription(bookRequest.description());
-            book.setPrice(bookRequest.price());
-            book.setPublicationDate(bookRequest.publicationDate());
-            book.setStock(bookRequest.stock());
-            book.setCategory(findCategoryByIdOrThrow(bookRequest.categoryId()));
-            book.setAuthors(findAuthorsByIdsOrThrow(bookRequest.authorIds()));
-            return toResponse(bookRepository.save(book));
-        });
+    public BookResponse update(BookUpdateRequest bookRequest, String isbnNumber) {
+
+        Book book = bookRepository.findById(isbnNumber)
+                .orElseThrow(() -> new ItemNotFoundException("Could not find book with id: " + isbnNumber));
+
+        book.setTitle(bookRequest.title());
+        book.setDescription(bookRequest.description());
+        book.setPrice(bookRequest.price());
+        book.setPublicationDate(bookRequest.publicationDate());
+        book.setStock(bookRequest.stock());
+        book.setCategory(findCategoryByIdOrThrow(bookRequest.categoryId()));
+        book.setAuthors(findAuthorsByIdsOrThrow(bookRequest.authorIds()));
+        return toResponse(bookRepository.save(book));
+
+
     }
 
     public void deleteById(String id) {

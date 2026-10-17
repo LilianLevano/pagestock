@@ -47,10 +47,10 @@ public class AuthorService {
         return toResponse(authorRepository.save(author));
     }
 
-    public Optional<AuthorResponse> update(AuthorRequest authorRequest, Long id) {
-        if (!authorRepository.existsById(id)){
-            throw new ItemNotFoundException("Could not find author with id: " + id);
-        }
+    public AuthorResponse update(AuthorRequest authorRequest, Long id) {
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Could not find author with id: " + id));
+
 
         String name = authorRequest.name().trim();
 
@@ -58,10 +58,8 @@ public class AuthorService {
             throw new AuthorAlreadyExistsException(name);
         }
 
-        return authorRepository.findById(id).map(author ->  {
-            author.setName(name);
-            return toResponse(authorRepository.save(author));
-        });
+        author.setName(name);
+        return toResponse(authorRepository.save(author));
     }
 
     public void delete(Long id) {

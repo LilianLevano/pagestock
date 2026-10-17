@@ -49,7 +49,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BookResponse> updateBook(@PathVariable String id, @Valid @RequestBody BookUpdateRequest bookRequest) {
-        return bookService.update(bookRequest, id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(bookService.update(bookRequest, id));
     }
 
     @DeleteMapping("/{id}")
