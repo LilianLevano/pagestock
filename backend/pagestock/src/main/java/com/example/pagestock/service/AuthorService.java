@@ -64,7 +64,7 @@ public class AuthorService {
         });
     }
 
-    public boolean delete(Long id) {
+    public void delete(Long id) {
         if (!authorRepository.existsById(id)){
             throw new ItemNotFoundException("Could not find author with id: " + id);
         }
@@ -74,7 +74,6 @@ public class AuthorService {
         }
 
         authorRepository.deleteById(id);
-        return true;
     }
 
     private AuthorResponse toResponse(Author author) {

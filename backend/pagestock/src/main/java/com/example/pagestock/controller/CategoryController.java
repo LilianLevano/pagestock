@@ -49,10 +49,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if(!categoryService.deleteById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
+        categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -4,6 +4,7 @@ import com.example.pagestock.dto.category.CategoryRequest;
 import com.example.pagestock.dto.category.CategoryResponse;
 import com.example.pagestock.exceptions.CategoryAlreadyExistsException;
 import com.example.pagestock.exceptions.CategoryNotEmptyException;
+import com.example.pagestock.exceptions.ItemNotFoundException;
 import com.example.pagestock.model.Category;
 import com.example.pagestock.repository.BookRepository;
 import com.example.pagestock.repository.CategoryRepository;
@@ -61,10 +62,10 @@ public class CategoryService {
         });
     }
 
-    public boolean deleteById(Long id) {
+    public void deleteById(Long id) {
 
-        if (!categoryRepository.existsById(id)) {
-            return false;
+        if (!categoryRepository.existsById(id)){
+            throw new ItemNotFoundException("Could not find category with id: " + id);
         }
 
         if(bookRepository.existsByCategoryId(id)) {
@@ -72,8 +73,6 @@ public class CategoryService {
         }
 
         categoryRepository.deleteById(id);
-        return true;
-
 
     }
 

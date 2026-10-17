@@ -69,12 +69,14 @@ public class BookService {
         });
     }
 
-    public boolean deleteById(String id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return true;
+    public void deleteById(String id) {
+
+        if (!bookRepository.existsById(id)) {
+            throw new ItemNotFoundException("Could not find Book with id: " + id);
         }
-        return false;
+
+        bookRepository.deleteById(id);
+
     }
 
     private Category findCategoryByIdOrThrow(Long id) {
