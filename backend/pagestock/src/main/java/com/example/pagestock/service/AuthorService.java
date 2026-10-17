@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-class AuthorService {
+public class AuthorService {
 
     private AuthorRepository authorRepository;
 
@@ -61,14 +61,6 @@ class AuthorService {
         authorRepository.deleteById(id);
         return true;
     }
-
-
-
-
-
-
-
-
 
     public AuthorResponse toResponse(Author author) {
         return new AuthorResponse(
