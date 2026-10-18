@@ -1,0 +1,81 @@
+package com.example.pagestock.security;
+
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+// Een filter in de keten van Spring Security. OncePerRequestFilter garandeert
+// dat hij maar één keer per request loopt, VOOR de controller.
+// Zijn enige taak: "staat er een geldig token in de request? Zo ja, zeg aan Spring wie dit is."
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
+
+    @Autowired
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        // De client stuurt het token in de header: "Authorization: Bearer eyJ..."
+        String header = request.getHeader("Authorization");
+
+        // Geen token (bv. GET /books of /auth/login): we doen niets en laten de request door.
+        // De regels in SecurityConfig beslissen daarna of de route publiek is of niet.
+        if (header == null || !header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // "Bearer " is 7 tekens: de rest is het token zelf.
+        String token = header.substring(7);
+
+        try {
+            // Controleert de handtekening en de vervaldatum, en leest het e-mailadres.
+            String email = jwtService.extractEmail(token);
+
+            // Alleen als nog niemand ingelogd is voor deze request.
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+                if (jwtService.isTokenValid(token, userDetails)) {
+                    // We maken een "ingelogde gebruiker" voor Spring: wie (userDetails),
+                    // geen wachtwoord nodig (null, het token is het bewijs) en zijn rollen.
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    // Vanaf hier weet Spring wie de gebruiker is, tot het einde van deze request.
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        } catch (JwtException | UsernameNotFoundException e) {
+            // Vervalst, verlopen of onbekend token: we zetten niemand in de context.
+            // De request blijft anoniem en een beveiligde route geeft dan 401.
+        }
+
+        // Altijd doorgeven aan de volgende filter in de keten.
+        filterChain.doFilter(request, response);
+    }
+}
