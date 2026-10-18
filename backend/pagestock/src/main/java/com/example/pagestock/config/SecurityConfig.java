@@ -1,9 +1,11 @@
 package com.example.pagestock.config;
 
+import com.example.pagestock.security.JwtAuthenticationFilter;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -13,6 +15,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 // @Configuration: deze klasse bevat geen businesslogica,
 // ze maakt objecten ("beans") aan die Spring beheert.
@@ -35,39 +39,31 @@ public class SecurityConfig {
     // doorlopen VOORDAT hij bij een controller aankomt.
     // Spring geeft ons een HttpSecurity-object (een "regelbouwer"),
     // wij configureren het, en build() maakt de uiteindelijke keten.
+    // De filter wordt door Spring geïnjecteerd als parameter van deze @Bean-methode.
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                // CSRF beschermt sites die op een sessiecookie steunen.
-                // Onze API gebruikt een token in een header, geen cookie:
-                // de bescherming is hier nutteloos, en aan laten blokkeert alle POST-requests (403).
                 .csrf(csrf -> csrf.disable())
-
-                // STATELESS: de server bewaart geen sessie in het geheugen.
-                // Elke request moet zelf bewijzen wie hij is
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // De toegangsregels, van boven naar onder gelezen: de EERSTE regel
-                // die bij de request past, wordt toegepast, de rest wordt genegeerd.
                 .authorizeHttpRequests(auth -> auth
-                        // Registreren en inloggen: moeten publiek zijn,
-                        // anders kan niemand ooit inloggen.
-                        .requestMatchers("/auth/**").permitAll()
-                        // De catalogus bekijken: publiek, maar alleen met GET.
-                        // Een POST /books past niet bij deze regel en zakt verder door.
-                        // "/**" = deze route en alles erachter (bv. /books/978...).
+                        .requestMatchers("/auth/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/**", "/authors/**", "/categories/**").permitAll()
-                        // Spring Boot stuurt bij een fout intern door naar /error om het antwoord op te bouwen.
-                        // Zonder deze regel wordt elke fout (400, 404, 409) verborgen achter een 401.
-                        .requestMatchers("/error").permitAll()
-
-                        // Al de rest: je moet ingelogd zijn. Altijd als laatste.
+                        // Alle ANDERE methodes (POST, PUT, DELETE) op de catalogus: alleen ADMIN.
+                        // hasRole("ADMIN") zoekt naar de autoriteit "ROLE_ADMIN".
+                        .requestMatchers("/books/**", "/authors/**", "/categories/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
-                // Tijdelijk: aanvaardt de header "Authorization: Basic ..." (email:wachtwoord).
-                // Om met Postman te testen vóór de JWT, en het is ons plan B.
-                .httpBasic(Customizer.withDefaults());
+                // Zonder httpBasic geeft Spring standaard 403 als er geen token is.
+                // We willen 401 ("wie ben je?") en geen 403 ("ik weet wie je bent, maar het mag niet").
+                .exceptionHandling(exceptions ->
+                        exceptions.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+
+                // Onze JWT-filter loopt VOOR de standaardfilter die met gebruikersnaam/wachtwoord werkt,
+                // zodat de gebruiker al gekend is wanneer de toegangsregels gecontroleerd worden.
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
