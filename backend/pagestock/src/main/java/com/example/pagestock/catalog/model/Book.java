@@ -25,6 +25,8 @@ public class Book {
     @NotNull(message = "Price can not be null.")
     private BigDecimal price;
 
+    private Long reviewId;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -35,10 +37,6 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name="author_id")
     )
     private Set<Author> authors;
-
-    @OneToMany(mappedBy = "reviewed_book")
-    private List<Review> reviews;
-
 
     @NotNull(message = "Publication date can not be null.")
     private LocalDate publicationDate;
@@ -120,14 +118,6 @@ public class Book {
 
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
     }
 
 }

@@ -1,12 +1,10 @@
 package com.example.pagestock.user.model;
 
 
-import com.example.pagestock.review.model.Review;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
 
 @Entity
 public class User {
@@ -24,27 +22,29 @@ public class User {
     private String lastName;
 
     @NotBlank(message = "Email can not be empty")
+    @Column(unique = true, nullable = false)
+    @Email(message = "Email is not valid")
     private String email;
 
     @NotBlank(message = "Password can not be empty")
-    @Size(min = 3)
     private String password;
 
     @NotBlank(message = "Phone number can not be empty")
-    private String phone_number;
+    private String phoneNumber;
 
-    @OneToMany
-    private List<Review> reviews;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password, String phone_number) {
+    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
@@ -87,20 +87,19 @@ public class User {
         this.password = password;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phone_number) {
+        this.phoneNumber = phone_number;
     }
 
-    public List<Review> getReviews() {
-        return reviews;
+    public Role getRole() {
+        return role;
     }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public void setRole(Role role) {
+        this.role = role;
     }
-
 }
