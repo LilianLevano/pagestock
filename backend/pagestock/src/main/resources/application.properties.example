@@ -7,3 +7,4 @@ spring.datasource.password=CHANGE_ME
 spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 spring.web.error.include-message=always
+spring.web.error.include-binding-errors=always
