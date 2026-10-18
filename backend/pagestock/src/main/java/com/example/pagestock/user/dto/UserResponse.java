@@ -1,9 +1,13 @@
 package com.example.pagestock.user.dto;
 
+import com.example.pagestock.user.model.Role;
+
 public record UserResponse(
         Long id,
-        String name,
+        String firstName,
+        String lastName,
         String email,
-        String phoneNumber
+        String phoneNumber,
+        Role role
 ) {
 }
