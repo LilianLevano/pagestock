@@ -8,3 +8,6 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 spring.web.error.include-message=always
 spring.web.error.include-binding-errors=always
+
+jwt.secret=CHANGE_ME_MIN_32_CHARACTERS
+jwt.expiration-ms=86400000
