@@ -26,20 +26,23 @@ De repository bevat twee afzonderlijke applicaties:
 
 
 ### Opbouw van de backend
- 
-Gelaagde architectuur, opgedeeld per domein (catalog, user, reservation, review):
- 
+
+Gelaagde architectuur, opgedeeld in packages per domein: `catalog` (boeken, auteurs, categorieën), `user`, `reservation` en `review`. Elk domein bevat zijn eigen lagen:
+
 - `controller`: stelt de REST-routes beschikbaar en zet resultaten om naar HTTP-statuscodes
 - `service`: bedrijfslogica (bv. `BookService`)
 - `repository`: toegang tot de data
 - `model`: JPA-entiteiten
 - `dto`: in- en uitvoerobjecten (`record`), zodat entiteiten nooit blootgesteld worden
-- `exceptions`: eigen excepties (`ItemNotFoundException`, `BookAlreadyExistsException`), centraal afgehandeld
+
+Daarnaast bevat het package `exceptions` de eigen excepties die door alle domeinen gedeeld worden (`ItemNotFoundException`, `BookAlreadyExistsException`, …).
+
+Domeinen zijn van elkaar gescheiden: er bestaat geen JPA-relatie tussen entiteiten van verschillende domeinen. Een domein verwijst naar een ander domein enkel via een id (bv. `userId`, `bookIsbn`) en roept indien nodig de service van dat domein aan, nooit rechtstreeks zijn repository. Zo kan elk domein afzonderlijk gelezen, getest en aangepast worden.
 
 ### Gebruikte patronen
  
 - **MVC**: model = entiteiten en DTO's; controllers = `controller`-klassen in de API en Laravel-controllers in de frontend; view = Blade-templates (de JSON-respons van de API vervult de rol van view in de backend).
-- **DAO**: de interfaces `BookRepository`, `CategoryRepository`, … breiden `JpaRepository` uit en isoleren de toegang tot de database (bv. `existsByCategoryId`, `findByTitleContainingIgnoreCase`).
+- **DAO**: de interfaces `BookRepository`, `CategoryRepository`, … breiden `ListCRUDRepository` uit en isoleren de toegang tot de database (bv. `existsByCategoryId`, `findByTitleContainingIgnoreCase`).
 - **IoC / dependency injection**: Spring maakt de beans aan en injecteert ze via de constructor (bv. `BookService` ontvangt `BookRepository` en `CategoryRepository`).
 
 ### Technische keuzes
