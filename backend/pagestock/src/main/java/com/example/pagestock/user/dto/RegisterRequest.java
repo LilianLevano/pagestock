@@ -7,10 +7,10 @@ import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
         @NotBlank(message = "First name can not be empty." )
-        String firstname,
+        String firstName,
 
         @NotBlank(message = "Last name can not be empty." )
-        String lastname,
+        String lastName,
 
         @NotBlank(message = "Email name can not be empty." )
         @Column(unique = true, nullable = false)
