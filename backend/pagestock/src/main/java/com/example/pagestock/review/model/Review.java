@@ -23,9 +23,7 @@ public class Review {
     @Max(5)
     private int rating;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book reviewed_book;
+    private String bookIsbn;
 
     @ManyToOne
     private User user;
@@ -33,10 +31,11 @@ public class Review {
     public Review() {
     }
 
-    public Review(String title, String description, int rating) {
+    public Review(String title, String description, int rating,  String bookIsbn) {
         this.title = title;
         this.description = description;
         this.rating = rating;
+        this.bookIsbn = bookIsbn;
     }
 
     public Long getId() {
@@ -71,12 +70,12 @@ public class Review {
         this.rating = rating;
     }
 
-    public Book getReviewed_book() {
-        return reviewed_book;
+    public String getBookIsbn() {
+        return bookIsbn;
     }
 
-    public void setReviewed_book(Book reviewed_book) {
-        this.reviewed_book = reviewed_book;
+    public void setBookIsbn(String bookIsbn) {
+        this.bookIsbn = bookIsbn;
     }
 
     public User getUser() {

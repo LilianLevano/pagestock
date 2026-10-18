@@ -92,8 +92,8 @@ public class User {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phone_number) {
-        this.phoneNumber = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Role getRole() {

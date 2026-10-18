@@ -1,13 +1,11 @@
 package com.example.pagestock.catalog.model;
 
-import com.example.pagestock.review.model.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,8 +23,6 @@ public class Book {
 
     @NotNull(message = "Price can not be null.")
     private BigDecimal price;
-
-    private Long reviewId;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
