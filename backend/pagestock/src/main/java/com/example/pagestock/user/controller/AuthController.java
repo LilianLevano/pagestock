@@ -1,5 +1,7 @@
 package com.example.pagestock.user.controller;
 
+import com.example.pagestock.user.dto.LoginRequest;
+import com.example.pagestock.user.dto.LoginResponse;
 import com.example.pagestock.user.dto.RegisterRequest;
 import com.example.pagestock.user.dto.UserResponse;
 import com.example.pagestock.user.service.UserService;
@@ -33,6 +35,11 @@ public class AuthController {
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         // 201 Created: er is een nieuwe resource (gebruiker) aangemaakt.
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(registerRequest));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(userService.login(loginRequest));
     }
 
 
