@@ -1,9 +1,12 @@
 package com.example.pagestock.config;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -68,4 +71,15 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    // De AuthenticationManager controleert e-mail + wachtwoord.
+    // Spring bouwt hem zelf met onze CustomUserDetailsService en onze PasswordEncoder;
+    // wij maken hem alleen beschikbaar als bean, zodat UserService hem kan gebruiken.
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+
+
 }
