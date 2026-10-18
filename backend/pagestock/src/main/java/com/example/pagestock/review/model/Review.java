@@ -3,11 +3,10 @@ package com.example.pagestock.review.model;
 import com.example.pagestock.catalog.model.Book;
 import com.example.pagestock.user.model.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 @Entity
+@Table(name = "reviews")
 public class Review {
 
     @Id
@@ -20,7 +19,8 @@ public class Review {
     private String description;
 
     @NotNull(message = "Rating can not be null")
-    @Size(min=1, max=5)
+    @Min(1)
+    @Max(5)
     private int rating;
 
     @ManyToOne

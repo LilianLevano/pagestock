@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
+@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
