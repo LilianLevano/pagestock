@@ -27,20 +27,22 @@ public class UserService {
 
     public UserResponse register(RegisterRequest registerRequest) {
 
-        if (userRepository.existsByEmail(registerRequest.email())) {
-            throw new EmailAlreadyExistsException();
+        if(!registerRequest.password().equals(registerRequest.confirmPassword())) {
+            throw new PasswordNotEqualsConfirmPasswordException();
         }
 
-        if(!registerRequest.password().equals(registerRequest.password())) {
-            throw new PasswordNotEqualsConfirmPasswordException();
+        String cleanEmail = registerRequest.email().trim().toLowerCase();
+
+        if (userRepository.existsByEmail(cleanEmail)) {
+            throw new EmailAlreadyExistsException();
         }
 
         String encodedPassword = passwordEncoder.encode(registerRequest.password());
 
         User user = new User();
-            user.setFirstName(registerRequest.firstname());
-            user.setLastName(registerRequest.lastname());
-            user.setEmail(registerRequest.email());
+            user.setFirstName(registerRequest.firstName().trim());
+            user.setLastName(registerRequest.lastName().trim());
+            user.setEmail(cleanEmail);
             user.setPassword(encodedPassword);
             user.setPhoneNumber(registerRequest.phoneNumber());
 
@@ -49,7 +51,7 @@ public class UserService {
 
 
 
-    public UserResponse toResponse(User user) {
+    private UserResponse toResponse(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getFirstName(),
