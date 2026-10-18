@@ -55,6 +55,10 @@ public class SecurityConfig {
                         // Een POST /books past niet bij deze regel en zakt verder door.
                         // "/**" = deze route en alles erachter (bv. /books/978...).
                         .requestMatchers(HttpMethod.GET, "/books/**", "/authors/**", "/categories/**").permitAll()
+                        // Spring Boot stuurt bij een fout intern door naar /error om het antwoord op te bouwen.
+                        // Zonder deze regel wordt elke fout (400, 404, 409) verborgen achter een 401.
+                        .requestMatchers("/error").permitAll()
+
                         // Al de rest: je moet ingelogd zijn. Altijd als laatste.
                         .anyRequest().authenticated())
 
