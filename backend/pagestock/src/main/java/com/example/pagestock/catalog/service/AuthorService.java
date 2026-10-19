@@ -27,7 +27,7 @@ public class AuthorService {
     }
 
     public List<AuthorResponse> findAll() {
-        return authorRepository.findAll().stream().map(this::toResponse).toList();
+        return authorRepository.findAllByOrderByIdAsc().stream().map(this::toResponse).toList();
     }
 
     public Optional<AuthorResponse> findById(Long id) {

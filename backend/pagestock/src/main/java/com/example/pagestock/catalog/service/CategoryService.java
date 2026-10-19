@@ -27,7 +27,7 @@ public class CategoryService {
     }
 
     public List<CategoryResponse> findAll() {
-        return categoryRepository.findAll().stream().map(this::toResponse).toList();
+        return categoryRepository.findAllByOrderByIdAsc().stream().map(this::toResponse).toList();
     }
 
     public Optional<CategoryResponse> findById(Long id) {

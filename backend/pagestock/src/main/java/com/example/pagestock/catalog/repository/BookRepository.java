@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface BookRepository extends ListCrudRepository<Book, String> {
     List<Book> findByTitleContainingIgnoreCase(String title);
+    List<Book> findAllByOrderByTitleAsc();
 
     boolean existsByCategoryId(Long categoryId);
     long countByCategoryId(Long categoryId);

@@ -37,7 +37,7 @@ public class BookService {
 
 
     public List<BookResponse> findAll() {
-        return bookRepository.findAll().stream().map(this::toResponse).toList();
+        return bookRepository.findAllByOrderByTitleAsc().stream().map(this::toResponse).toList();
     }
 
     public Optional<BookResponse> findById(String id) {
