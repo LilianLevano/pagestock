@@ -13,6 +13,8 @@ import com.example.pagestock.catalog.model.Category;
 import com.example.pagestock.catalog.repository.AuthorRepository;
 import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.catalog.repository.CategoryRepository;
+import com.example.pagestock.exceptions.OutOfStockException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +94,22 @@ public class BookService {
 
         bookRepository.deleteById(id);
 
+    }
+
+    @Transactional
+    public void decreaseStock(String isbnNumber, int quantity) {
+
+        if(quantity <= 0) {
+            throw new IllegalArgumentException("Quantity should be greater than 0");
+        }
+
+        Book book = bookRepository.findById(isbnNumber).orElseThrow(() -> new ItemNotFoundException("Could not find book with id: " + isbnNumber));
+
+        if (book.getStock() - quantity < 0) {
+            throw new OutOfStockException(book.getIsbnNumber());
+        }
+
+        book.setStock(book.getStock() - quantity);
     }
 
     private Category findCategoryByIdOrThrow(Long id) {
