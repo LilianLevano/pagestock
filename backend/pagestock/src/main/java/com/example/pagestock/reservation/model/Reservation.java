@@ -3,9 +3,11 @@ package com.example.pagestock.reservation.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,17 +19,17 @@ public class Reservation {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "A user must be linked to a reservation.")
+    @NotNull(message = "A user must be linked to a reservation.")
     private Long userId;
 
     @OneToMany(mappedBy = "reservation",  cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ReservationLine> lines;
+    private List<ReservationLine> lines = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus status;
 
-    @NotEmpty(message = "Reservation date can not be empty.")
+    @NotNull(message = "Reservation date can not be empty.")
     private LocalDateTime reservedAt;
 
     @Column(nullable = true)
@@ -43,6 +45,7 @@ public class Reservation {
     }
 
     public void addLine(ReservationLine line) {
+        lines.add(line);
         line.setReservation(this);
     }
 

@@ -13,7 +13,7 @@ import com.example.pagestock.reservation.model.ReservationStatus;
 import com.example.pagestock.reservation.repository.ReservationRepository;
 import com.example.pagestock.user.model.User;
 import com.example.pagestock.user.service.UserService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +71,7 @@ public class ReservationService {
             ReservationLine line = new ReservationLine();
             line.setBookIsbn(lineRequest.bookIsbn());
             line.setQuantity(lineRequest.quantity());
+            line.setBookTitle(book.title());
             reservation.addLine(line);
         }
 
@@ -118,19 +119,19 @@ public class ReservationService {
         return toResponse(reservation);
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<ReservationResponse> findReservationsOfUser(String email){
          User user = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User " + email + " not found"));
         return reservationRepository.findByUserId(user.getId()).stream().map(this::toResponse).toList();
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<ReservationResponse> findAllByUserIdAndPickedUp(String email){
         User user = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User " + email + " not found"));
         return reservationRepository.findByUserIdAndStatus(user.getId(), ReservationStatus.PICKED_UP).stream().map(this::toResponse).toList();
     }
 
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<ReservationResponse> findReservationsToPickUp(){
         return reservationRepository.findByStatus(ReservationStatus.RESERVED).stream().map(this::toResponse).toList();
     }

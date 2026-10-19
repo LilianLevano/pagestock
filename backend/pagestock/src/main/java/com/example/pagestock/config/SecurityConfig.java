@@ -53,7 +53,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/books/**", "/authors/**", "/categories/**").permitAll()
                         // Alle ANDERE methodes (POST, PUT, DELETE) op de catalogus: alleen ADMIN.
                         // hasRole("ADMIN") zoekt naar de autoriteit "ROLE_ADMIN".
-                        .requestMatchers("/books/**", "/authors/**", "/categories/**").hasRole("ADMIN")
+                        .requestMatchers("/books/**", "/authors/**", "/categories/**", "/reservations/*/pickup").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/reservations").hasRole("ADMIN")
                         .anyRequest().authenticated())
 
                 // Zonder httpBasic geeft Spring standaard 403 als er geen token is.
