@@ -1,5 +1,6 @@
 package com.example.pagestock.user.service;
 
+import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.exceptions.EmailAlreadyExistsException;
 import com.example.pagestock.exceptions.PasswordNotEqualsConfirmPasswordException;
 import com.example.pagestock.security.JwtService;
@@ -9,15 +10,15 @@ import com.example.pagestock.user.dto.RegisterRequest;
 import com.example.pagestock.user.dto.UserResponse;
 import com.example.pagestock.user.model.User;
 import com.example.pagestock.user.repository.UserRepository;
-import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -27,13 +28,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,  AuthenticationManager authenticationManager, JwtService jwtService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, BookRepository bookRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.bookRepository = bookRepository;
     }
 
 
@@ -74,6 +77,10 @@ public class UserService {
 
         // We maken een token voor deze gebruiker en sturen het terug.
         return new LoginResponse(jwtService.generateToken(userDetails));
+    }
+
+    public Optional<User> findByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 
 
