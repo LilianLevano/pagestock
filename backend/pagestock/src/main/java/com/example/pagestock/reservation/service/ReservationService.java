@@ -125,8 +125,9 @@ public class ReservationService {
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public List<ReservationResponse> findAllByUserIdAndPickedUp(Long id){
-        return reservationRepository.findByUserIdAndStatus(id, ReservationStatus.PICKED_UP).stream().map(this::toResponse).toList();
+    public List<ReservationResponse> findAllByUserIdAndPickedUp(String email){
+        User user = userService.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User " + email + " not found"));
+        return reservationRepository.findByUserIdAndStatus(user.getId(), ReservationStatus.PICKED_UP).stream().map(this::toResponse).toList();
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
