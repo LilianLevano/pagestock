@@ -44,6 +44,10 @@ public class ReservationService {
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        if(request.lines().isEmpty()){
+            throw new ReservationEmptyException("You can't create reservation without any books.");
+        }
+
         // Reservatie aanmaken met status RESERVED
         Reservation reservation = new Reservation();
         reservation.setUserId(user.getId());
