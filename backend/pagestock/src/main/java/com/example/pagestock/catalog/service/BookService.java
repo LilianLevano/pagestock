@@ -106,7 +106,7 @@ public class BookService {
         Book book = bookRepository.findById(isbnNumber).orElseThrow(() -> new ItemNotFoundException("Could not find book with id: " + isbnNumber));
 
         if (book.getStock() - quantity < 0) {
-            throw new OutOfStockException(book.getIsbnNumber());
+            throw new OutOfStockException(book.getIsbnNumber(), book.getStock());
         }
 
         book.setStock(book.getStock() - quantity);

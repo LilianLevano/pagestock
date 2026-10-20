@@ -68,7 +68,7 @@ public class ReservationService {
 
             // Genoeg voorraad voor deze lijn, anders 409
             if (book.stock() < lineRequest.quantity()) {
-                throw new OutOfStockException(lineRequest.bookIsbn());
+                throw new OutOfStockException(lineRequest.bookIsbn(), book.stock());
             }
 
             // Lijn toevoegen; addLine zet ook line.setReservation(this)
