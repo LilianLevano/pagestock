@@ -5,37 +5,65 @@ import com.example.pagestock.user.model.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 @Entity
-@Table(name = "reviews")
+@Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"book_isbn", "user_id"}))
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title can not be empty.")
-    private String title;
-    @NotBlank(message = "Description can not be empty.")
-    private String description;
+    @Column(length = 2000)
+    private String comment;
 
     @NotNull(message = "Rating can not be null")
     @Min(1)
     @Max(5)
     private int rating;
 
+    @NotBlank(message = "A review must be bound to a book.")
     private String bookIsbn;
 
-    @ManyToOne
-    private User user;
+    @NotNull(message = "A review must be bound")
+    private Long userId;
+
+    private LocalDate createdAt;
 
     public Review() {
     }
 
-    public Review(String title, String description, int rating,  String bookIsbn) {
-        this.title = title;
-        this.description = description;
+    public Review(String comment, int rating, String bookIsbn, Long userId, LocalDate createdAt) {
+        this.comment = comment;
         this.rating = rating;
         this.bookIsbn = bookIsbn;
+        this.userId = userId;
+        this.createdAt = createdAt;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -46,21 +74,6 @@ public class Review {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public int getRating() {
         return rating;
@@ -78,11 +91,4 @@ public class Review {
         this.bookIsbn = bookIsbn;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
