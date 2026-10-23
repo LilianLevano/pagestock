@@ -5,7 +5,8 @@
         {{-- Linkerkant: naam van de winkel + navigatielinks --}}
         <div class="flex items-center gap-8">
             <a href="{{ url('/') }}" class="text-xl font-bold text-gray-900">PageStock</a>
-            <a href="{{ url('/') }}" class="text-gray-600 hover:text-gray-900">Home</a>
+            <x-nav-bar-element url="/" label="Home" />
+
         </div>
 
         {{-- Rechterkant: winkelmandje en gebruikersicoon --}}
