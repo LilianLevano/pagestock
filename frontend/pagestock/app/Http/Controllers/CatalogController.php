@@ -31,6 +31,6 @@ class CatalogController extends Controller
         $reviews = Http::get(config("services.backend.url") . "/books/" . $isbnNumber . "/reviews");
         $reviews = $reviews->json();
 
-        return view('book', compact('book', 'reviews'));
+        return view('books.book', compact('book', 'reviews'));
     }
 }

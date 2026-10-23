@@ -19,7 +19,7 @@
 
         {{-- Knoppen: voorlopig nog zonder functie --}}
         <div class="flex gap-2 mt-3">
-            <a href="#" class="flex-1 text-center border border-gray-900 text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100">
+            <a href="{{route("catalog.show", $book['isbnNumber'])}}" class="flex-1 text-center border border-gray-900 text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100">
                 Details
             </a>
             <button type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700" aria-label="Toevoegen aan winkelmandje">
