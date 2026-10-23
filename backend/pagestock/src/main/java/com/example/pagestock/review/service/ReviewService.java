@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -47,7 +48,7 @@ public class ReviewService {
             throw new DuplicateReviewException("You cannot post a second review on a book.");
         }
 
-        Review review = new Review(createReviewRequest.comment(), createReviewRequest.rating(), book.isbnNumber(), user.getId(), LocalDate.now());
+        Review review = new Review(createReviewRequest.comment(), createReviewRequest.rating(), book.isbnNumber(), user.getId(), LocalDateTime.now());
 
         return toResponse(reviewRepository.save(review));
     }

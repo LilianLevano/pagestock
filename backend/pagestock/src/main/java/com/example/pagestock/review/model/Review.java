@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews", uniqueConstraints = @UniqueConstraint(columnNames = {"book_isbn", "user_id"}))
@@ -29,12 +30,12 @@ public class Review {
     @NotNull(message = "A review must be bound")
     private Long userId;
 
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public Review() {
     }
 
-    public Review(String comment, int rating, String bookIsbn, Long userId, LocalDate createdAt) {
+    public Review(String comment, int rating, String bookIsbn, Long userId, LocalDateTime createdAt) {
         this.comment = comment;
         this.rating = rating;
         this.bookIsbn = bookIsbn;
@@ -58,11 +59,11 @@ public class Review {
         this.userId = userId;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
