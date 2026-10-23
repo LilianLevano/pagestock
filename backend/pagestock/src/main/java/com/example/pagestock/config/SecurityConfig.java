@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/books/**", "/authors/**", "/categories/**").permitAll()
                         // Alle ANDERE methodes (POST, PUT, DELETE) op de catalogus: alleen ADMIN.
                         // hasRole("ADMIN") zoekt naar de autoriteit "ROLE_ADMIN".
-                        .requestMatchers(HttpMethod.POST, "books/*/reviews").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/books/*/reviews").authenticated()
                         .requestMatchers("/books/**", "/authors/**", "/categories/**", "/reservations/*/pickup").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/reservations").hasRole("ADMIN")
                         .anyRequest().authenticated())
