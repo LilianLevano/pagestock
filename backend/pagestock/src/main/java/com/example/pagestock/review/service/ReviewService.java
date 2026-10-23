@@ -1,11 +1,10 @@
 package com.example.pagestock.review.service;
 
 import com.example.pagestock.catalog.dto.book.BookResponse;
-import com.example.pagestock.catalog.model.Book;
-import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.catalog.service.BookService;
 import com.example.pagestock.exceptions.DuplicateReviewException;
 import com.example.pagestock.exceptions.ItemNotFoundException;
+import com.example.pagestock.exceptions.ReviewDeleteNotAllowedException;
 import com.example.pagestock.exceptions.ReviewNotAllowedException;
 import com.example.pagestock.reservation.service.ReservationService;
 import com.example.pagestock.review.dto.CreateReviewRequest;
@@ -38,7 +37,7 @@ public class ReviewService {
     public ReviewResponse create (String bookIsbn, String email, CreateReviewRequest createReviewRequest) {
 
         BookResponse book = bookService.findById(bookIsbn).orElseThrow(() ->  new ItemNotFoundException("Book " + bookIsbn + " not found"));
-        User user = userService.findByEmail(email).orElseThrow(() ->  new UsernameNotFoundException("User " + email + " not found"));
+        User user = userService.findByEmail(email).orElseThrow(() ->  new ItemNotFoundException("User " + email + " not found"));
 
         if (!reservationService.hasPickedUp(user.getId(), bookIsbn)){
             throw new ReviewNotAllowedException("The book " + bookIsbn + " is not picked up. You cannot post a review about a book you don't have.");
@@ -61,12 +60,17 @@ public class ReviewService {
         return reviewRepository.findByBookIsbnOrderByCreatedAtDesc(bookIsbn).stream().map(this::toResponse).toList();
     }
 
-    public boolean deleteReview(Long id) {
-        if (!reviewRepository.existsById(id)) {
-            throw new ItemNotFoundException("Review " + id + " not found.");
+    public void deleteReview(Long id, String email, boolean isAdmin) {
+
+        Review review = reviewRepository.findById(id).orElseThrow(() ->  new ItemNotFoundException("Review " + id + " not found"));
+
+        User user = userService.findByEmail(email).orElseThrow(() ->  new ItemNotFoundException("User " + email + " not found"));
+
+        if ( !isAdmin && !user.getId().equals(review.getUserId())){
+            throw new ReviewDeleteNotAllowedException("You cannot delete the review that you don't own.");
         }
+
         reviewRepository.deleteById(id);
-        return true;
     }
 
     public ReviewResponse toResponse(Review review) {
