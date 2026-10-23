@@ -13,6 +13,7 @@ import com.example.pagestock.review.model.Review;
 import com.example.pagestock.review.repository.ReviewRepository;
 import com.example.pagestock.user.model.User;
 import com.example.pagestock.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class ReviewService {
     private final UserService userService;
     private final ReservationService reservationService;
 
+    @Autowired
     public ReviewService(ReviewRepository reviewRepository, BookService bookService, UserService userService, ReservationService reservationService) {
         this.reviewRepository = reviewRepository;
         this.bookService = bookService;

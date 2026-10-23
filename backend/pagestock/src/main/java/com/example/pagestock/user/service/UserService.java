@@ -2,6 +2,7 @@ package com.example.pagestock.user.service;
 
 import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.exceptions.EmailAlreadyExistsException;
+import com.example.pagestock.exceptions.ItemNotFoundException;
 import com.example.pagestock.exceptions.PasswordNotEqualsConfirmPasswordException;
 import com.example.pagestock.security.JwtService;
 import com.example.pagestock.user.dto.LoginRequest;
@@ -89,7 +90,7 @@ public class UserService {
     }
 
     public String getFullName(Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("User not found"));
 
         return user.getFirstName() + " " + user.getLastName();
     }
