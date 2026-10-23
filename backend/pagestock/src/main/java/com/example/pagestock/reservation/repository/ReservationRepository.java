@@ -13,4 +13,7 @@ public interface ReservationRepository extends ListCrudRepository<Reservation, L
 
     List<Reservation> findByStatus(ReservationStatus status);
 
+
+    boolean existsByUserIdAndStatusAndLines_BookIsbn(Long userId, ReservationStatus status, String bookIsbn);
+
 }
