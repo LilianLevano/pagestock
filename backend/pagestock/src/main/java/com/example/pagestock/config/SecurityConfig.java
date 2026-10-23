@@ -54,6 +54,7 @@ public class SecurityConfig {
                         // Alle ANDERE methodes (POST, PUT, DELETE) op de catalogus: alleen ADMIN.
                         // hasRole("ADMIN") zoekt naar de autoriteit "ROLE_ADMIN".
                         .requestMatchers(HttpMethod.POST, "/books/*/reviews").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/books/reviews/*").authenticated()
                         .requestMatchers("/books/**", "/authors/**", "/categories/**", "/reservations/*/pickup").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/reservations").hasRole("ADMIN")
                         .anyRequest().authenticated())
