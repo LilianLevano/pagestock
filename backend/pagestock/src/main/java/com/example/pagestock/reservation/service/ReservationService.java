@@ -140,6 +140,10 @@ public class ReservationService {
         return reservationRepository.findByStatus(ReservationStatus.RESERVED).stream().map(this::toResponse).toList();
     }
 
+    public boolean hasPickedUp(Long userId, String bookIsbn){
+        return reservationRepository.existsByUserIdAndStatusAndLines_BookIsbn(userId, ReservationStatus.PICKED_UP, bookIsbn);
+    }
+
     public ReservationResponse toResponse(Reservation  reservation){
         return new ReservationResponse(
                 reservation.getId(),
