@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Middleware\EnsureApiToken;
 use Illuminate\Support\Facades\Route;
 
@@ -18,5 +19,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Beschermde routes in deze groep zetten (winkelmandje, reservaties, profiel)
 Route::middleware(EnsureApiToken::class)->group(function () {
-    // Route::get('/reservations', ...);
+    Route::get('/books/{isbn}/reviews/create', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/books/{isbn}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
