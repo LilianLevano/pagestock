@@ -79,7 +79,7 @@ class AuthController extends Controller
     {
         $request->session()->forget('token');
         $request->session()->invalidate();
-     
+
         $request->session()->regenerateToken();
 
         return redirect()->route('catalog.index');
