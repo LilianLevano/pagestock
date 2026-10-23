@@ -64,7 +64,8 @@
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold text-gray-900">Reviews</h2>
                     <button type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                        Review toevoegen
+                        <a href="{{ route('reviews.create', $book['isbnNumber']) }}">Review toevoegen</a>
+
                     </button>
                 </div>
 
