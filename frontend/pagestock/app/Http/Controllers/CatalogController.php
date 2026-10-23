@@ -8,11 +8,18 @@ use Illuminate\Support\Facades\Http;
 
 class CatalogController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
 
 
         $response = Http::get(config("services.backend.url" ) . "/books");
         $books = $response->json();
+        $search = $request->query('search');
+        if ($search) {
+            $books = collect($books)
+                ->filter(fn ($book) => str_contains(strtolower($book['title']), strtolower($search)))
+                ->values()
+                ->all();
+        }
 
         return view('welcome', compact('books'));
     }
