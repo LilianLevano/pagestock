@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,12 @@ public class UserService {
 
     public Optional<User> findById(Long id){
         return userRepository.findById(id);
+    }
+
+    public String getFullName(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return user.getFirstName() + " " + user.getLastName();
     }
 
 
