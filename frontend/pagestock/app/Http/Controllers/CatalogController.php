@@ -23,4 +23,14 @@ class CatalogController extends Controller
 
         return view('welcome', compact('books'));
     }
+
+    public function show($isbnNumber){
+
+        $response = Http::get(config("services.backend.url") . "/books/" . $isbnNumber);
+        $book = $response->json();
+        $reviews = Http::get(config("services.backend.url") . "/books/" . $isbnNumber . "/reviews");
+        $reviews = $reviews->json();
+
+        return view('book', compact('book', 'reviews'));
+    }
 }
