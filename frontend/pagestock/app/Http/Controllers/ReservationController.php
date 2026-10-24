@@ -22,6 +22,13 @@ class ReservationController extends Controller
             session()->forget('token');
             return redirect()->route('login');
         }
+
+        // Andere fout van de API -> terug naar de catalogus met een melding
+        if ($response->failed()) {
+            return redirect()->route('catalog.index')
+                ->withErrors(['reservation' => 'Je reservaties konden niet geladen worden.']);
+        }
+
         // Sorteren op id: nieuwste reservatie bovenaan
         $reservations = collect($response->json())->sortByDesc('id')->values();
 

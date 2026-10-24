@@ -13,9 +13,9 @@ class AdminReservationController extends Controller
         $response = Http::withToken(session('token'))
             ->get(config('services.backend.url') . '/reservations');
 
-        // 403: Spring weigert, de gebruiker is geen admin
+        // Fout van de API (bv. 401, 403)
         if ($response->failed()) {
-            return redirect()->route('catalog.index')->withErrors(['error' => $response->json('message')]);
+            return redirect()->route('catalog.index')->withErrors(['error' => $response->json('message') ?? 'Kan de reservaties niet laden.']);
         }
 
 

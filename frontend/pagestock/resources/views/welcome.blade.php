@@ -1,5 +1,6 @@
 <x-site-layout>
     <div class="max-w-7xl mx-auto px-4 py-8">
+        <x-flash/>
 
         {{-- Zoekbalk: GET-formulier, de zoekterm komt in de URL (?search=...) --}}
         <form method="GET" action="{{ url('/') }}" class="mb-8 flex gap-2">
@@ -22,7 +23,7 @@
                 {{-- Wordt getoond als er geen boeken zijn (of de zoekopdracht niets vindt) --}}
                 <p class="text-gray-500 col-span-full">Geen boeken gevonden.</p>
             @endforelse
-            <x-flash/>
+
         </div>
     </div>
 </x-site-layout>

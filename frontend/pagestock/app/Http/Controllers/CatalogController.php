@@ -12,43 +12,38 @@ class CatalogController extends Controller
 
         $search = $request->query('search');
 
-        $response = Http::get(config("services.backend.url" ) . "/books");
-        $books = $response->json();
 
         if($search){
             $response = Http::get(config("services.backend.url"). "/books/search", ['title' => $search]);
-            $books = $response->json();
-            return view('welcome', compact('books'));
+        }else{
+            $response = Http::get(config("services.backend.url" ) . "/books");
         }
 
+        $books = $response->json();
+
+        // Fout van de API: lege lijst tonen met een melding (geen redirect, anders een lus)
         if ($response->failed()) {
-            return back()->withErrors(['book' => $response->json('message')]);
+            return view('welcome', ['books' => []])
+                ->withErrors(['book' => 'De boeken konden niet geladen worden.']);
         }
 
         return view('welcome', compact('books'));
     }
 
-    public function show($isbnNumber){
+    public function show($isbnNumber)
+    {
+        $response = Http::get(config('services.backend.url') . '/books/' . $isbnNumber);
 
-        $response = Http::get(config("services.backend.url") . "/books/" . $isbnNumber);
-
-        if($response->status() === 404){
-            return back()->withErrors(['book' => $response->json('message')]);
-        }
-
-        if($response->failed()){
-            return back()->withErrors(['book' => $response->json('message')]);
+        // Boek bestaat niet (of API-fout) -> 404-pagina
+        if ($response->failed()) {
+            abort($response->status(), $response->json('message') ?? 'Dit boek bestaat niet.');
         }
 
         $book = $response->json();
 
-        $reviews = Http::get(config("services.backend.url") . "/books/" . $isbnNumber . "/reviews");
-
-        if ($reviews->failed()) {
-            return back()->withErrors(['review' => $reviews->json('message')]);
-        }
-
-        $reviews = $reviews->json();
+        // Reviews ophalen; als dat mislukt, tonen we het boek toch, met een lege lijst
+        $reviewsResponse = Http::get(config('services.backend.url') . '/books/' . $isbnNumber . '/reviews');
+        $reviews = $reviewsResponse->successful() ? $reviewsResponse->json() : [];
 
         return view('books.book', compact('book', 'reviews'));
     }
