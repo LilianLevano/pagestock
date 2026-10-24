@@ -1,4 +1,6 @@
 package com.example.pagestock.user.dto;
 
-public record LoginResponse(String token) {
+import com.example.pagestock.user.model.Role;
+
+public record LoginResponse(String token, String role) {
 }
