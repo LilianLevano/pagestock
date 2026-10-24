@@ -60,13 +60,10 @@
 
             {{-- RECHTS: reviews van dit boek --}}
             <section class="bg-white border rounded-lg shadow-sm p-6">
-                {{-- Kop met knop om een review toe te voegen (voorlopig zonder functie) --}}
+                {{-- Kop met knop om een review toe te voegen --}}
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold text-gray-900">Reviews</h2>
-                    <button type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-                        <a href="{{ route('reviews.create', $book['isbnNumber']) }}">Review toevoegen</a>
-
-                    </button>
+                        <a href="{{ route('reviews.create', $book['isbnNumber']) }}" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700">Review toevoegen</a>
                 </div>
 
                 {{-- Lijst van reviews, met een melding als er nog geen zijn --}}
