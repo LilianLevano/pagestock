@@ -77,8 +77,12 @@ public class UserService {
         // Bij succes bevat de "principal" de UserDetails uit CustomUserDetailsService.
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        // Rol uit de authorities halen ("ROLE_ADMIN" -> "ADMIN")
+        String role = userDetails.getAuthorities().iterator().next()
+                .getAuthority().replace("ROLE_", "");
+
         // We maken een token voor deze gebruiker en sturen het terug.
-        return new LoginResponse(jwtService.generateToken(userDetails));
+        return new LoginResponse(jwtService.generateToken(userDetails), role);
     }
 
     public Optional<User> findByEmail(String email){
