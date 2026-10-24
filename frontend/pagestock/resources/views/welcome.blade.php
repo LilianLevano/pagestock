@@ -17,10 +17,12 @@
             @forelse($books as $book)
                 {{-- Eén kaart per boek --}}
                 <x-book-card :book="$book" />
+
             @empty
                 {{-- Wordt getoond als er geen boeken zijn (of de zoekopdracht niets vindt) --}}
                 <p class="text-gray-500 col-span-full">Geen boeken gevonden.</p>
             @endforelse
+            <x-flash/>
         </div>
     </div>
 </x-site-layout>

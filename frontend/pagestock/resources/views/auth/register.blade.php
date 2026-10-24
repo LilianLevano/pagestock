@@ -11,6 +11,7 @@
 <body>
 
 <div class="max-w-md mx-auto px-4 py-12">
+    <x-flash/>
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Registreren</h1>
 
     <form method="POST" action="{{ route('register') }}" class="bg-white border rounded-lg shadow-sm p-6 space-y-4">
