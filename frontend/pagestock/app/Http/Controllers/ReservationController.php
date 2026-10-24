@@ -48,7 +48,7 @@ class ReservationController extends Controller
 
         if ($response->status() === 401) {
             session()->forget('token');
-            return redirect()->route('login')->withErrors(['cart' => $response->json('message') ?? 'U bent niet ingelogd. Log in of register.']);
+            return redirect()->route('login')->withErrors(['cart' =>  'U bent niet ingelogd. Log in of register.']);
 
 
         }
@@ -80,7 +80,7 @@ class ReservationController extends Controller
 
 
         if ($response->failed()) {
-            return back()->withErrors(['reservation' => 'Annuleren mislukt.']);
+            return back()->withErrors(['reservation' => $response->json('message') ?? 'Annuleren mislukt.']);
         }
 
         return back()->with('success', 'Reservatie geannuleerd.');
@@ -89,13 +89,19 @@ class ReservationController extends Controller
     // Boeken die de gebruiker al heeft afgehaald
     public function purchased()
     {
-        $reservations = $this->api()->get('/reservations/me/purchased')->json() ?? [];
+        $reservations = $this->api()->get('/reservations/me/purchased');
+        if($reservations->failed()){
+            return redirect()->route("catalog.index")->withErrors(['reservation' => $reservations->json('message') ?? 'Reservatie mislukt.']);
+        }
+
 
     // Alle lijnen van alle afgehaalde reservaties samenvoegen, elk boek maar één keer
-            $books = collect($reservations)
+            $books = collect($reservations->json())
                 ->flatMap(fn ($reservation) => $reservation['lines'])
                 ->unique('bookIsbn')
                 ->values();
+
+
 
         return view('reservations.reservations-purchased', compact('books'));
     }

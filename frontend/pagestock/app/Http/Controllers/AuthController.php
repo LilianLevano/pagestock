@@ -28,7 +28,7 @@ class AuthController extends Controller
         }
 
 
-        session(['token' => $response->json('token')]);
+        session(['token' => $response->json('token'), 'role' => $response->json('role')]);
 
         $request->session()->regenerate();
 
@@ -66,7 +66,7 @@ class AuthController extends Controller
 
         if ($response->failed()) {
             return back()
-                ->withErrors(['email' => 'Registratie mislukt, controleer je gegevens.'])
+                ->withErrors(['email' => $response->json('message') ?? 'Registratie mislukt, controleer je gegevens.'])
                 ->withInput($request->except('password', 'confirmPassword'));
         }
 

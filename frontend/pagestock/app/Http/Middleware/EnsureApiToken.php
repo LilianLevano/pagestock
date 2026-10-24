@@ -13,7 +13,7 @@ class EnsureApiToken
     {
         // Geen token -> doorsturen naar de loginpagina
         if (!session()->has('token')) {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('error', 'U bent niet ingelogd. Log in of register.');
         }
 
         // Wel een token -> de request mag verder naar de controller

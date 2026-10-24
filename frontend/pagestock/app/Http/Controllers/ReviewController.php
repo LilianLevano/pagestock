@@ -13,9 +13,9 @@ class ReviewController extends Controller
         // Het boek ophalen om de titel te kunnen tonen
         $response = Http::get(config('services.backend.url') . '/books/' . $isbn);
 
-        // Onbestaand ISBN -> 404-pagina
+
         if ($response->failed()) {
-            abort(404);
+            return back()->withErrors(['error' => $response->json('message') ?? 'Dit boek bestaat niet.']);
         }
 
         $book = $response->json();
@@ -39,20 +39,20 @@ class ReviewController extends Controller
         // 401: token verlopen of ongeldig -> opnieuw inloggen
         if ($response->status() === 401) {
             session()->forget('token');
-            return redirect()->route('login');
+            return redirect()->route('login')->withErrors(['error' => "U bent niet ingelogd."]);
         }
 
         // 403: de gebruiker heeft dit boek nog niet afgehaald
         if ($response->status() === 403) {
             return back()
-                ->withErrors(['comment' => 'Je kan enkel een review schrijven over een boek dat je hebt afgehaald.'])
+                ->withErrors(['comment' => $response->json('message') ?? 'Je kan enkel een review schrijven over een boek dat je hebt afgehaald.'])
                 ->withInput();
         }
 
         // 409: er bestaat al een review van deze gebruiker voor dit boek
         if ($response->status() === 409) {
             return back()
-                ->withErrors(['comment' => 'Je hebt al een review geschreven voor dit boek.'])
+                ->withErrors(['comment' => $response->json('message') ?? 'Je hebt al een review geschreven voor dit boek.'])
                 ->withInput();
         }
 

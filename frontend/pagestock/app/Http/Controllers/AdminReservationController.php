@@ -14,9 +14,10 @@ class AdminReservationController extends Controller
             ->get(config('services.backend.url') . '/reservations');
 
         // 403: Spring weigert, de gebruiker is geen admin
-        if ($response->status() === 403) {
-            abort(403);
+        if ($response->failed()) {
+            return redirect()->route('catalog.index')->withErrors(['error' => $response->json('message')]);
         }
+
 
         $reservations = $response->json() ?? [];
 
@@ -29,10 +30,6 @@ class AdminReservationController extends Controller
         $response = Http::withToken(session('token'))
             ->patch(config('services.backend.url') . '/reservations/' . $id . '/pickup');
 
-        // 409: intussen niet genoeg voorraad meer
-        if ($response->status() === 409) {
-            return back()->withErrors(['error' => $response->json('message') ?? 'Niet genoeg voorraad meer.']);
-        }
 
         if ($response->failed()) {
             return back()->withErrors(['reservation' =>  $response->json('message') ?? 'Bevestigen mislukt.']);

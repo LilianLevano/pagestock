@@ -14,7 +14,11 @@ class CartController extends Controller
         $cart = session('cart', []);
 
         // Eén API-call voor alle boeken, daarna enkel de boeken uit het mandje houden
-        $books = Http::get(config('services.backend.url') . '/books')->json() ?? [];
+        $books = Http::get(config('services.backend.url') . '/books')->json();
+
+        if ($books->failed()) {
+            return redirect()->route('catalog.index')->withErrors(['error' => $books->json('message')]);
+        }
 
         $items = collect($books)
             ->filter(fn ($book) => isset($cart[$book['isbnNumber']]))
