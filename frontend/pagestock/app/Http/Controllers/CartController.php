@@ -13,12 +13,15 @@ class CartController extends Controller
     {
         $cart = session('cart', []);
 
-        // Eén API-call voor alle boeken, daarna enkel de boeken uit het mandje houden
-        $books = Http::get(config('services.backend.url') . '/books')->json();
 
-        if ($books->failed()) {
-            return redirect()->route('catalog.index')->withErrors(['error' => $books->json('message')]);
+        // Eén API-call voor alle boeken, daarna enkel de boeken uit het mandje houden
+        $response = Http::get(config('services.backend.url') . '/books');
+
+        if ($response->failed()) {
+            return redirect()->route('catalog.index')->withErrors(['error' => $response->json('message')]);
         }
+
+       $books = $response->json();
 
         $items = collect($books)
             ->filter(fn ($book) => isset($cart[$book['isbnNumber']]))

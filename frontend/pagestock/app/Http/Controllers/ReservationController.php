@@ -22,8 +22,9 @@ class ReservationController extends Controller
             session()->forget('token');
             return redirect()->route('login');
         }
+        // Sorteren op id: nieuwste reservatie bovenaan
+        $reservations = collect($response->json())->sortByDesc('id')->values();
 
-        $reservations = $response->json() ?? [];
 
         return view('reservations.reservations-index', compact('reservations'));
     }
