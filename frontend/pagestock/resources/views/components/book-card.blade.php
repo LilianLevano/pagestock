@@ -22,9 +22,14 @@
             <a href="{{route("catalog.show", $book['isbnNumber'])}}" class="flex-1 text-center border border-gray-900 text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100">
                 Details
             </a>
-            <button type="button" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700" aria-label="Toevoegen aan winkelmandje">
-                +
-            </button>
+            {{-- Formulier: voegt één exemplaar toe aan het winkelmandje in de sessie --}}
+            <form method="POST" action="{{ route('cart.add', $book['isbnNumber']) }}">
+                @csrf
+                <button type="submit" class="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+                        aria-label="Toevoegen aan winkelmandje" @disabled($book['stock'] < 1)>
+                    +
+                </button>
+            </form>
         </div>
     </div>
 </div>
