@@ -41,8 +41,8 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findAllByUserIdAndPickedUp(emailUser));
     }
 
-    @PutMapping("/{id}/cancel")
-    public ResponseEntity<ReservationResponse> update(Authentication authentication, @PathVariable Long id, @Valid @RequestBody CreateReservationRequest request ){
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<ReservationResponse> update(Authentication authentication, @PathVariable Long id){
         String emailUser = authentication.getName();
         return ResponseEntity.ok(reservationService.cancelReservation(id,emailUser));
     }
@@ -52,7 +52,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findReservationsToPickUp());
     }
 
-    @PutMapping("/{id}/pickup")
+    @PatchMapping("/{id}/pickup")
     public ResponseEntity<ReservationResponse> pickUp(@PathVariable Long id){
         return ResponseEntity.ok(reservationService.confirmPickUp(id));
     }
