@@ -7,11 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="/logo.png">
 </head>
 <body>
 
 <div class="max-w-md mx-auto px-4 py-12">
     <x-flash/>
+    <x-logo class="h-24 mx-auto mb-6" />
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Inloggen</h1>
 
 
