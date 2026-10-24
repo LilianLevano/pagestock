@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminAuthorController;
+use App\Http\Controllers\AdminBookController;
+use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
@@ -42,6 +45,28 @@ Route::middleware(EnsureApiToken::class)->group(function () {
     Route::middleware(EnsureAdmin::class)->prefix('admin')->group(function () {
         Route::get('/reservations', [AdminReservationController::class, 'index'])->name('admin.reservations');
         Route::patch('/reservations/{id}/pickup', [AdminReservationController::class, 'pickup'])->name('admin.reservations.pickup');
+
+        // Boeken
+        Route::get('/books', [AdminBookController::class, 'index'])->name('admin.books.index');
+        Route::get('/books/create', [AdminBookController::class, 'create'])->name('admin.books.create');
+        Route::post('/books', [AdminBookController::class, 'store'])->name('admin.books.store');
+        Route::get('/books/{isbn}/edit', [AdminBookController::class, 'edit'])->name('admin.books.edit');
+        Route::put('/books/{isbn}', [AdminBookController::class, 'update'])->name('admin.books.update');
+        Route::delete('/books/{isbn}', [AdminBookController::class, 'destroy'])->name('admin.books.destroy');
+
+        // Auteurs (alles op één pagina)
+        Route::get('/authors', [AdminAuthorController::class, 'index'])->name('admin.authors.index');
+        Route::post('/authors', [AdminAuthorController::class, 'store'])->name('admin.authors.store');
+        Route::put('/authors/{id}', [AdminAuthorController::class, 'update'])->name('admin.authors.update');
+        Route::delete('/authors/{id}', [AdminAuthorController::class, 'destroy'])->name('admin.authors.destroy');
+
+        // Categorieën (alles op één pagina)
+        Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
+        Route::post('/categories', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
+        Route::put('/categories/{id}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
+        Route::delete('/categories/{id}', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+
     });
 
 
