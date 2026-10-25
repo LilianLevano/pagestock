@@ -20,6 +20,14 @@ import java.util.List;
 import java.util.Set;
 
 // Vult de databank met testdata bij het opstarten van de applicatie
+/**
+ * Vult de database met testdata bij het opstarten van de applicatie.
+ * <p>
+ * Maakt twee testaccounts aan als ze nog niet bestaan: {@code user@gmail.com} (rol {@code USER})
+ * en {@code admin@gmail.com} (rol {@code ADMIN}). Dit is de enige manier om een beheerder aan te
+ * maken. Daarnaast worden 5 categorieën, 12 auteurs en 8 boeken aangemaakt, maar alleen als er
+ * nog geen enkel boek in de database staat. Zo ontstaan er geen dubbele gegevens bij een herstart.
+ */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
@@ -29,7 +37,15 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Constructor injection van de drie repositories (IoC)
+    /**
+     * Maakt de seeder aan met de benodigde afhankelijkheden.
+     *
+     * @param bookRepository     repository om boeken op te slaan
+     * @param authorRepository   repository om auteurs op te slaan
+     * @param categoryRepository repository om categorieën op te slaan
+     * @param userRepository     repository om de testaccounts op te slaan
+     * @param passwordEncoder    BCrypt-encoder om de wachtwoorden van de testaccounts te hashen
+     */
     @Autowired
     public DataSeeder(BookRepository bookRepository, AuthorRepository authorRepository,
                       CategoryRepository categoryRepository, UserRepository userRepository,
@@ -41,7 +57,11 @@ public class DataSeeder implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Spring roept run() één keer op, nadat de applicatie volledig gestart is
+    /**
+     * Maakt de testaccounts en, als de database nog geen boeken bevat, de testcatalogus aan.
+     *
+     * @param args command-line argumenten van de applicatie (niet gebruikt)
+     */
     @Override
     public void run(String... args) {
         seedUser("Test", "User", "user@gmail.com", "user1234", "0470000001", Role.USER);
@@ -93,7 +113,16 @@ public class DataSeeder implements CommandLineRunner {
         ));
     }
 
-    // Hulpmethode: maakt een gebruiker aan als het e-mailadres nog niet bestaat
+    /**
+     * Maakt een gebruiker aan, tenzij er al een gebruiker met dit e-mailadres bestaat.
+     *
+     * @param firstName   voornaam
+     * @param lastName    achternaam
+     * @param email       e-mailadres, in kleine letters
+     * @param rawPassword wachtwoord in platte tekst; wordt hier met BCrypt gehasht
+     * @param phoneNumber telefoonnummer
+     * @param role        rol van de gebruiker
+     */
     private void seedUser(String firstName, String lastName, String email, String rawPassword,
                           String phoneNumber, Role role) {
         // Gebruiker bestaat al: niets doen (e-mail is uniek in de databank)
@@ -107,7 +136,19 @@ public class DataSeeder implements CommandLineRunner {
         userRepository.save(user);
     }
 
-    // Hulpmethode: maakt een Book aan en koppelt categorie en auteurs
+    /**
+     * Maakt een boek aan (zonder het op te slaan) en koppelt de categorie en de auteurs.
+     *
+     * @param isbn        ISBN-nummer
+     * @param title       titel
+     * @param description beschrijving
+     * @param price       prijs als tekst (bv. {@code "9.99"}), om afrondingsfouten van {@code double} te vermijden
+     * @param published   publicatiedatum
+     * @param stock       aantal exemplaren op voorraad
+     * @param category    een al opgeslagen categorie
+     * @param authors     al opgeslagen auteurs
+     * @return het nieuwe, nog niet opgeslagen boek
+     */
     private Book book(String isbn, String title, String description, String price, LocalDate published,
                       Long stock, Category category, Set<Author> authors) {
         // BigDecimal uit een String, zodat er geen afrondingsfouten van double in komen

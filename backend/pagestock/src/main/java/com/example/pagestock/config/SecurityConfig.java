@@ -18,10 +18,23 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// @Configuration: deze klasse bevat geen businesslogica,
-// ze maakt objecten ("beans") aan die Spring beheert.
-// @EnableWebSecurity: we nemen de beveiligingsconfiguratie over
-// in plaats van de standaardconfiguratie ("alles is geblokkeerd").
+/**
+ * Beveiligingsconfiguratie van de API, gebaseerd op JWT-tokens zonder sessies.
+ * <p>
+ * Toegangsregels (de eerste regel die past, wint):
+ * <ul>
+ *   <li>{@code /auth/**} en {@code /error}: publiek.</li>
+ *   <li>{@code GET} op {@code /books/**}, {@code /authors/**} en {@code /categories/**}: publiek
+ *       (ook de reviews van een boek).</li>
+ *   <li>{@code POST /books/{isbn}/reviews} en {@code DELETE /books/reviews/{id}}: elke ingelogde
+ *       gebruiker.</li>
+ *   <li>Alle andere requests op {@code /books/**}, {@code /authors/**}, {@code /categories/**},
+ *       plus {@code /reservations/{id}/pickup} en {@code GET /reservations}: alleen {@code ADMIN}.</li>
+ *   <li>Al de rest: elke ingelogde gebruiker.</li>
+ * </ul>
+ * Zonder geldig token volgt {@code 401 Unauthorized}; met een token maar zonder de juiste rol
+ * {@code 403 Forbidden}.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -30,6 +43,9 @@ public class SecurityConfig {
     // Spring roept deze methode één keer op bij het opstarten en bewaart het resultaat.
     // Elke klasse die een PasswordEncoder in haar constructor vraagt
     // (bv. UserService) krijgt dit object van Spring. Dat is IoC.
+    /**
+     * @return de {@link BCryptPasswordEncoder} waarmee wachtwoorden worden gehasht en vergeleken
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -40,6 +56,16 @@ public class SecurityConfig {
     // Spring geeft ons een HttpSecurity-object (een "regelbouwer"),
     // wij configureren het, en build() maakt de uiteindelijke keten.
     // De filter wordt door Spring geïnjecteerd als parameter van deze @Bean-methode.
+    /**
+     * Bouwt de filterketen: CSRF uit (niet nodig zonder cookies), geen sessies, de toegangsregels
+     * uit de klassebeschrijving, {@code 401} bij ontbrekende authenticatie, en de JWT-filter vóór
+     * de standaard login-filter.
+     *
+     * @param http                    de builder van Spring Security
+     * @param jwtAuthenticationFilter filter die het JWT-token uit de header leest en controleert
+     * @return de geconfigureerde filterketen
+     * @throws Exception als de configuratie niet kan worden opgebouwd
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
@@ -75,6 +101,11 @@ public class SecurityConfig {
     // De AuthenticationManager controleert e-mail + wachtwoord.
     // Spring bouwt hem zelf met onze CustomUserDetailsService en onze PasswordEncoder;
     // wij maken hem alleen beschikbaar als bean, zodat UserService hem kan gebruiken.
+    /**
+     * @param config de authenticatieconfiguratie die Spring zelf opbouwt
+     * @return de {@link AuthenticationManager} die e-mailadres en wachtwoord controleert bij het inloggen
+     * @throws Exception als de manager niet kan worden opgehaald
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
