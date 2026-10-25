@@ -1,5 +1,6 @@
 <x-site-layout>
     <div class="max-w-7xl mx-auto px-4 py-8">
+        <x-flash/>
 
         {{-- Titel bovenaan de pagina --}}
         <h1 class="text-3xl font-bold text-gray-900">{{ $book['title'] }} - Detail</h1>
@@ -56,6 +57,7 @@
                         <dd class="text-gray-900">{{ $book['description'] ?? '-' }}</dd>
                     </div>
                 </dl>
+
             </section>
 
             {{-- RECHTS: reviews van dit boek --}}
@@ -86,5 +88,13 @@
                 </div>
             </section>
         </div>
+        {{-- Formulier: voegt één exemplaar toe aan het winkelmandje in de sessie --}}
+        <form method="POST" action="{{ route('cart.add', $book['isbnNumber']) }}">
+            @csrf
+            <button type="submit" class="bg-gray-900 text-white px-40 py-2 rounded-lg hover:bg-gray-700 mt-[50px]"
+                    aria-label="Toevoegen aan winkelmandje" @disabled($book['stock'] < 1)>
+                + Toevoegen aan het winkelmandje
+            </button>
+        </form>
     </div>
 </x-site-layout>
