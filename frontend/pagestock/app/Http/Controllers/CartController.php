@@ -4,11 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
 
-// Winkelmandje: bestaat enkel in de Laravel-sessie, de API kent het niet.
-// Vorm van de sessie: 'cart' => [ isbn => aantal, ... ]
+/**
+ * Winkelmandje van de ingelogde gebruiker.
+ *
+ * Het mandje bestaat alleen in de Laravel-sessie (sleutel cart, met per ISBN-nummer het
+ * aantal exemplaren); de API kent het niet. Pas bij het reserveren
+ * ({@see ReservationController::store()}) wordt het naar de API gestuurd.
+ */
 class CartController extends Controller
 {
-    // Toont het winkelmandje met titel en prijs van elk boek
+    /**
+     * Toont het winkelmandje met titel, prijs, aantal en de totaalprijs.
+     *
+     * Haalt alle boeken op via GET /books en houdt alleen de boeken uit het mandje over.
+     *
+     * Route: GET /cart
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reservations.cart-index
+     *                                                                 met $items en $total, of een redirect
+     *                                                                 naar de catalogus als de API faalt
+     */
     public function index()
     {
         $cart = session('cart', []);
@@ -39,7 +54,15 @@ class CartController extends Controller
         return view('reservations.cart-index', compact('items', 'total'));
     }
 
-    // Eén exemplaar van een boek toevoegen (knop "+" op de kaart)
+    /**
+     * Voegt één exemplaar van een boek toe aan het mandje. Bestaan en voorraad worden hier niet
+     * gecontroleerd; dat doet de API pas bij het reserveren.
+     *
+     * Route: POST /cart/add/{isbn}
+     *
+     * @param  string  $isbn  ISBN-nummer van het boek
+     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina met een succesmelding
+     */
     public function add($isbn)
     {
         $cart = session('cart', []);
@@ -50,7 +73,14 @@ class CartController extends Controller
         return back()->with('success', 'Boek toegevoegd aan je winkelmandje.');
     }
 
-    // Een boek volledig uit het mandje verwijderen
+    /**
+     * Verwijdert een boek volledig uit het mandje, ongeacht het aantal exemplaren.
+     *
+     * Route: POST /cart/remove/{isbn}
+     *
+     * @param  string  $isbn  ISBN-nummer van het boek
+     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina
+     */
     public function remove($isbn)
     {
         $cart = session('cart', []);

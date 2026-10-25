@@ -5,9 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * Reviews schrijven voor een boek.
+ *
+ * Alle routes staan achter {@see \App\Http\Middleware\EnsureApiToken}. De API controleert of
+ * de gebruiker het boek heeft afgehaald en nog geen review heeft geschreven.
+ */
 class ReviewController extends Controller
 {
-    // Toont het formulier om een review te schrijven voor één boek
+    /**
+     * Toont het formulier om een review te schrijven, met de titel van het boek.
+     *
+     * Route: GET /books/{isbn}/reviews/create
+     *
+     * @param  string  $isbn  ISBN-nummer van het boek
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reviews.create met $book,
+     *                                                                 of terug als het boek niet bestaat
+     */
     public function create($isbn)
     {
         // Het boek ophalen om de titel te kunnen tonen
@@ -23,7 +37,21 @@ class ReviewController extends Controller
         return view('reviews.create', compact('book'));
     }
 
-    // Verwerkt het formulier: stuurt de review naar de Spring-API
+    /**
+     * Stuurt de review naar POST /books/{isbn}/reviews van de API.
+     *
+     * Foutafhandeling: 401 -> redirect naar /login; 403 (boek niet afgehaald) en 409 (al een
+     * review) -> terug naar het formulier met de melding van de API; andere fouten -> algemene melding.
+     *
+     * Route: POST /books/{isbn}/reviews
+     *
+     * @param  Request  $request  formulier met rating (1 tot 5) en comment (max. 2000 tekens)
+     * @param  string   $isbn     ISBN-nummer van het boek
+     * @return \Illuminate\Http\RedirectResponse naar de detailpagina van het boek bij succes,
+     *                                           anders naar /login of terug naar het formulier
+     *
+     * @throws \Illuminate\Validation\ValidationException als rating of comment ongeldig is
+     */
     public function store(Request $request, $isbn)
     {
         // Zelfde regels als CreateReviewRequest in Spring
