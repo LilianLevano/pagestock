@@ -8,20 +8,37 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// Spring Security kent onze tabel "users" niet. Via deze interface leggen we uit
-// HOE het een gebruiker moet laden. Spring roept deze klasse zelf op bij elke login
-// (nu bij elke Basic-request, dinsdag bij POST /auth/login).
+/**
+ * Laadt gebruikers voor Spring Security op basis van hun e-mailadres.
+ * <p>
+ * Wordt gebruikt door de {@code AuthenticationManager} bij het inloggen en door de
+ * {@code JwtAuthenticationFilter} bij elke request met een JWT-token.
+ */
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Maakt de service aan.
+     *
+     * @param userRepository repository om gebruikers op te halen
+     */
     @Autowired
     public CustomUserDetailService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // "username" is de naam die Spring gebruikt, bij ons is dat het e-mailadres.
+    /**
+     * Zoekt een gebruiker op via zijn e-mailadres en zet hem om naar een Spring Security
+     * {@link UserDetails}, met de BCrypt-hash van het wachtwoord en de rol als autoriteit
+     * ({@code ROLE_USER} of {@code ROLE_ADMIN}).
+     *
+     * @param email e-mailadres van de gebruiker; hoofdletters en spaties vooraan en achteraan
+     *              maken niet uit
+     * @return de gegevens van de gebruiker in het formaat van Spring Security
+     * @throws UsernameNotFoundException als er geen gebruiker met dit e-mailadres bestaat
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // Zelfde normalisatie als bij register, anders vindt "Test@mail.com" niemand.
