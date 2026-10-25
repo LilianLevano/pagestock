@@ -11,6 +11,6 @@ public enum ReservationStatus {
     RESERVED,
     /** Opgehaald in de winkel; de voorraad van de boeken is verlaagd. */
     PICKED_UP,
-    /** Geannuleerd door de gebruiker; de voorraad is niet gewijzigd. */
+    /** Geannuleerd door de eigenaar of door een {@code ADMIN}; de voorraad is niet gewijzigd. */
     CANCELLED
 }

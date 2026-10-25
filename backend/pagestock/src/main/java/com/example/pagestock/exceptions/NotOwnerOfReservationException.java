@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Wordt gegooid wanneer een gebruiker een reservatie wil annuleren die niet van hem of haar is.
+ * Een {@code ADMIN} mag elke reservatie annuleren en krijgt deze exception dus nooit.
  * <p>
  * Geeft {@code 403 Forbidden} terug aan de client.
  */

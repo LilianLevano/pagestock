@@ -9,13 +9,15 @@ import java.util.List;
 /**
  * Repository voor {@link Reservation}-entiteiten.
  * <p>
- * De queries worden door Spring Data JPA afgeleid uit de methodenamen. Er is geen sortering
- * opgegeven: de volgorde van de resultaten hangt af van de database.
+ * De queries worden door Spring Data JPA afgeleid uit de methodenamen. Alleen
+ * {@link #findByUserIdOrderByReservedAtDesc(Long)} sorteert; bij de andere methodes hangt de
+ * volgorde van de resultaten af van de database.
  */
 public interface ReservationRepository extends ListCrudRepository<Reservation, Long> {
     /**
      * @param userId id van de gebruiker
-     * @return alle reservaties van deze gebruiker, ongeacht hun status, gesorteer op datum (meest recent eerst)
+     * @return alle reservaties van deze gebruiker, ongeacht hun status, gesorteerd op
+     *         reservatiedatum (meest recent eerst)
      */
     List<Reservation> findByUserIdOrderByReservedAtDesc(Long userId);
 
