@@ -24,7 +24,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> create(Authentication authentication, @RequestBody CreateReservationRequest request){
+    public ResponseEntity<ReservationResponse> create(Authentication authentication,@Valid @RequestBody CreateReservationRequest request){
         String emailUser = authentication.getName();
         return  ResponseEntity.status(HttpStatus.CREATED).body(reservationService.create(emailUser,request));
     }
