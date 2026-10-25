@@ -20,18 +20,44 @@ import java.io.IOException;
 // Een filter in de keten van Spring Security. OncePerRequestFilter garandeert
 // dat hij maar één keer per request loopt, VOOR de controller.
 // Zijn enige taak: "staat er een geldig token in de request? Zo ja, zeg aan Spring wie dit is."
+/**
+ * Filter die bij elke request het JWT-token uit de header {@code Authorization: Bearer <token>}
+ * leest en, als het geldig is, de gebruiker in de {@link SecurityContextHolder} zet.
+ * <p>
+ * De filter weigert zelf nooit een request: zonder of met een ongeldig token blijft de request
+ * anoniem, en beslissen de regels in {@code SecurityConfig} of dat mag ({@code 401} op een
+ * beveiligde route).
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Maakt de filter aan.
+     *
+     * @param jwtService         service om het token te controleren en het e-mailadres eruit te lezen
+     * @param userDetailsService service om de gebruiker en zijn rol uit de database te laden
+     */
     @Autowired
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Controleert het token van de request en registreert de gebruiker bij Spring Security.
+     * <p>
+     * De gebruiker wordt bij elke request opnieuw uit de database geladen, zodat een gewijzigde
+     * rol meteen geldt en een verwijderde gebruiker niet meer binnenkomt.
+     *
+     * @param request     de binnenkomende request
+     * @param response    de response
+     * @param filterChain de rest van de filterketen; wordt altijd verder aangeroepen
+     * @throws ServletException bij een fout verder in de filterketen
+     * @throws IOException      bij een I/O-fout verder in de filterketen
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

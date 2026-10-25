@@ -14,6 +14,13 @@ import java.util.Date;
 
 // Deze klasse doet maar twee dingen: een token MAKEN (bij login)
 // en een token CONTROLEREN (bij elke volgende request).
+/**
+ * Maakt en controleert JWT-tokens, ondertekend met HMAC-SHA256.
+ * <p>
+ * Het token bevat als subject het e-mailadres van de gebruiker, plus het tijdstip van aanmaak
+ * en de vervaldatum. De geheime sleutel ({@code jwt.secret}) en de geldigheidsduur
+ * ({@code jwt.expiration-ms}) komen uit {@code application.properties}.
+ */
 @Service
 public class JwtService {
 
@@ -24,6 +31,12 @@ public class JwtService {
     private final long expirationMs;
 
     // @Value leest de waarden uit application.properties (jwt.secret, jwt.expiration-ms).
+    /**
+     * Maakt de service aan met de sleutel en de geldigheidsduur uit de configuratie.
+     *
+     * @param secret       geheime sleutel; minstens 32 tekens (256 bits), anders faalt het opstarten
+     * @param expirationMs geldigheidsduur van een token in milliseconden
+     */
     @Autowired
     public JwtService(@Value("${jwt.secret}") String secret,
                       @Value("${jwt.expiration-ms}") long expirationMs) {
@@ -33,6 +46,12 @@ public class JwtService {
     }
 
     // Wordt opgeroepen na een geslaagde login.
+    /**
+     * Maakt een nieuw ondertekend token voor een gebruiker.
+     *
+     * @param userDetails de ingelogde gebruiker; zijn gebruikersnaam (e-mailadres) wordt het subject
+     * @return het token als string ({@code header.payload.handtekening})
+     */
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         return Jwts.builder()
@@ -50,17 +69,39 @@ public class JwtService {
     // Leest het e-mailadres uit het token. parseSignedClaims controleert EERST
     // de handtekening en de vervaldatum: is het token vervalst of verlopen,
     // dan gooit het een exception en lezen we niets.
+    /**
+     * Leest het e-mailadres (subject) uit een token, na controle van handtekening en vervaldatum.
+     *
+     * @param token het JWT-token, zonder het voorvoegsel {@code "Bearer "}
+     * @return het e-mailadres van de gebruiker
+     * @throws io.jsonwebtoken.JwtException als het token vervalst, verlopen of ongeldig is
+     */
     public String extractEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
     // Een token is geldig als het bij deze gebruiker hoort en niet verlopen is.
+    /**
+     * Controleert of een token bij de opgegeven gebruiker hoort en nog niet verlopen is.
+     *
+     * @param token       het JWT-token
+     * @param userDetails de gebruiker die uit de database werd geladen
+     * @return {@code true} als het subject overeenkomt met de gebruikersnaam en het token nog geldig is
+     * @throws io.jsonwebtoken.JwtException als het token vervalst, verlopen of ongeldig is
+     */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         Claims claims = parseClaims(token);
         return claims.getSubject().equals(userDetails.getUsername())
                 && claims.getExpiration().after(new Date());
     }
 
+    /**
+     * Controleert de handtekening en de vervaldatum van een token en geeft de inhoud terug.
+     *
+     * @param token het JWT-token
+     * @return de claims (inhoud) van het token
+     * @throws io.jsonwebtoken.JwtException als het token vervalst, verlopen of ongeldig is
+     */
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .verifyWith(key)
