@@ -11,6 +11,7 @@ import com.example.pagestock.reservation.model.Reservation;
 import com.example.pagestock.reservation.model.ReservationLine;
 import com.example.pagestock.reservation.model.ReservationStatus;
 import com.example.pagestock.reservation.repository.ReservationRepository;
+import com.example.pagestock.user.model.Role;
 import com.example.pagestock.user.model.User;
 import com.example.pagestock.user.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +112,7 @@ public class ReservationService {
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!Objects.equals(reservation.getUserId(), user.getId())){
+        if (!Objects.equals(reservation.getUserId(), user.getId()) && user.getRole() != Role.ADMIN){
             throw new NotOwnerOfReservationException("User " + user.getId() + " is not owner of this reservation (id: " + reservation.getId() + ")");
         }
 
