@@ -25,7 +25,7 @@ Het project bestaat uit een Spring Boot-backend (REST API) en een Laravel/Blade-
 - [x] Een review verwijderen (eigen review, of elke review als admin)
   
 
-## 2. Architecture
+## 2. Architectuur
 
 ```
 Browser --> Laravel-frontend (Blade) --HTTP/JSON--> Spring Boot REST API --> MySQL
@@ -73,7 +73,7 @@ Zo kan elk domein afzonderlijk gelezen, getest en aangepast worden.
 ### Gebruikte patronen
  
 - **MVC**: model = entiteiten en DTO's; controllers = `controller`-klassen in de API en Laravel-controllers in de frontend; view = Blade-templates (de JSON-respons van de API vervult de rol van view in de backend).
-- **DAO**: de interfaces `BookRepository`, `CategoryRepository`, `UserRepository`, … breiden `ListCRUDRepository` uit en isoleren de toegang tot de database (bv. `existsByCategoryId`, `findByTitleContainingIgnoreCase`, `findByEmail`).
+- **DAO**: de interfaces `BookRepository`, `CategoryRepository`, `UserRepository`, … breiden `ListCrudRepository` uit en isoleren de toegang tot de database (bv. `existsByCategoryId`, `findByTitleContainingIgnoreCase`, `findByEmail`).
 - **IoC / dependency injection**: Spring maakt de beans aan en injecteert ze via de constructor (bv. `BookService` ontvangt `BookRepository` en `CategoryRepository`, `UserService` ontvangt de `PasswordEncoder` die in `SecurityConfig` als `@Bean` gedefinieerd is).
 
 ### Technische keuzes
@@ -93,7 +93,8 @@ Zo kan elk domein afzonderlijk gelezen, getest en aangepast worden.
 - Java 17
 - Maven (of de meegeleverde wrapper `mvnw`)
 - MySQL
-- PHP en Composer
+- PHP 8.4 en Composer
+- Node.js en npm (voor Vite en Tailwind CSS)
   
 ## 4. Installatie en opstarten
 
@@ -131,33 +132,33 @@ Een andere gebruiker admin maken kan rechtstreeks in MySQL:
 ```sql
 UPDATE users SET role = 'ADMIN' WHERE email = 'jouw@email.com';
 ```
- 
- 
-### Eerste admin aanmaken
-
-Elke nieuwe gebruiker krijgt de rol `USER`. Om een admin te maken: registreer een gebruiker via `POST /auth/register` en voer daarna in MySQL uit:
-
-```sql
-UPDATE users SET role = 'ADMIN' WHERE email = 'jouw@email.com';
-```
 
 ### Frontend
  
 ```bash
 cd frontend/pagestock
 cp .env.example .env
+```
+Vul in .env API_URL in (bv. http://localhost:8080)
+
+```bash
 composer install
 php artisan key:generate
-npm install
-php artisan serve
+php artisan migrate
 ```
- 
-Controleer in `.env` dat `API_URL` naar de backend wijst (bv. `http://localhost:8080`).
-De applicatie is bereikbaar op `http://127.0.0.1:8000`. (Kan anders zijn, check het gegeven adress in de console.)  
+Na artisan migrate, gaat de console je vragen om een SQLite database file te genereren. Typ "yes".
 
 De SQLite-database van Laravel bevat geen boeken of gebruikers: ze dient alleen om de sessies op te slaan (`SESSION_DRIVER=database`).
 
-## Documentatie van de endpoints
+```bash
+php artisan serve
+```
+
+
+De applicatie is bereikbaar op `http://127.0.0.1:8000`. (Kan anders zijn, check het gegeven adres in de console.)  
+
+
+## 5. Documentatie van de endpoints
 
 ### Authenticatie
 
@@ -304,7 +305,9 @@ Voorbeeld van een body voor `POST /books/{isbn}/reviews` en het antwoord:
 }
 ```
 
-## 6. Tests### Unit tests (backend)
+## 6. Tests
+
+### Unit tests (backend)
  
 ```bash
 cd backend/pagestock
@@ -329,7 +332,20 @@ De API werd daarnaast manueel getest met Postman (bv. `POST /authors` zonder tok
  
 <!-- NOG AAN TE VULLEN -->
 
-## 8. Bronnen en AI-Tools
+## 8. Planning
+ 
+Het project werd gebouwd in vier fasen. Elke commit begint met het onderdeel (`BACKEND`, `FRONTEND`, `DOCS`), zodat de volledige voortgang in de Git-geschiedenis te volgen is.
+ 
+| Periode | Werk |
+|---|---|
+| 29/09 – 05/10 | Opzet van de twee projecten (Spring Boot en Laravel), verbinding frontend-backend getest, eerste entiteiten (`Book`, `Author`, `Category`, `Review`) |
+| 14/10 – 17/10 | Catalogus in de backend: DTO's, repositories, services, controllers en eigen excepties voor boeken, categorieën en auteurs; eerste versie van de README |
+| 18/10 – 20/10 | Opsplitsing in packages per domein, authenticatie (registratie, login, JWT, rollen), reservaties en de afhaling met aanpassing van de voorraad |
+| 23/10 – 25/10 | Reviews en `DataSeeder` in de backend, volledige Laravel-frontend (catalogus, login, winkelmandje, reservaties, reviews, adminpaneel), tests en documentatie |
+|25/10 - 28/10| Code controle, laatste details rechtzetten |
+ 
+
+## 9. Bronnen en AI-Tools
 
 ### Documentatie en bronnen
  
