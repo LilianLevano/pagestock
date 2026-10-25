@@ -1,16 +1,16 @@
 package com.example.pagestock.reservation.dto;
 
-import com.example.pagestock.catalog.service.BookService;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-
+/**
+ * Response met één lijn van een reservatie.
+ *
+ * @param bookIsbn  ISBN-nummer van het gereserveerde boek
+ * @param quantity  aantal gereserveerde exemplaren
+ * @param bookTitle titel van het boek zoals die was op het moment van reserveren; wordt niet
+ *                  aangepast als de titel van het boek later wijzigt
+ */
 public record ReservationLineResponse(
-        @NotBlank
         String bookIsbn,
-
-        @Min(1)
         int quantity,
-
         String bookTitle
 
 ) {
