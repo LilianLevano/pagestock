@@ -115,7 +115,7 @@ public class CategoryService {
      * @throws ItemNotFoundException     als er geen categorie met dit id bestaat
      * @throws CategoryNotEmptyException als er nog boeken aan de categorie gekoppeld zijn
      */
-    public void deleteById(Long id) {
+    public void delete(Long id) {
 
         if (!categoryRepository.existsById(id)){
             throw new ItemNotFoundException("Could not find category with id: " + id);

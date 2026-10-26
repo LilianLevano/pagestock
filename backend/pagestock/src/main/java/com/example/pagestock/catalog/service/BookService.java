@@ -142,7 +142,7 @@ public class BookService {
      * @param id ISBN-nummer van het boek dat moet worden verwijderd
      * @throws ItemNotFoundException als er geen boek met dit ISBN-nummer bestaat
      */
-    public void deleteById(String id) {
+    public void delete(String id) {
 
         if (!bookRepository.existsById(id)) {
             throw new ItemNotFoundException("Could not find Book with id: " + id);
