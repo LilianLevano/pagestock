@@ -68,6 +68,7 @@ public class UserService {
      * @return de aangemaakte gebruiker, zonder wachtwoord
      * @throws PasswordNotEqualsConfirmPasswordException als wachtwoord en bevestiging verschillen
      * @throws EmailAlreadyExistsException               als het e-mailadres al in gebruik is
+     * @throws PhoneAlreadyExistsException               als het telefoonnummer al in gebruik is
      */
     public UserResponse register(RegisterRequest registerRequest) {
 
@@ -92,7 +93,7 @@ public class UserService {
             user.setLastName(registerRequest.lastName().trim());
             user.setEmail(cleanEmail);
             user.setPassword(encodedPassword);
-            user.setPhoneNumber(registerRequest.phoneNumber());
+            user.setPhoneNumber(registerRequest.phoneNumber().trim());
 
         return toResponse(userRepository.save(user));
     }

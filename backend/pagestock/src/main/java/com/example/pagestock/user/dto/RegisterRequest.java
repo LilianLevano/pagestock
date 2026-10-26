@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
  *                        Wordt in kleine letters opgeslagen.
  * @param password        wachtwoord van minstens 8 tekens
  * @param confirmPassword herhaling van het wachtwoord; moet gelijk zijn aan {@code password}
- * @param phoneNumber     telefoonnummer; mag niet leeg zijn
+ * @param phoneNumber     telefoonnummer; mag niet leeg zijn en nog niet in gebruik zijn
  */
 public record RegisterRequest(
         @NotBlank(message = "First name can not be empty." )

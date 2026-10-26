@@ -48,7 +48,7 @@ public class AuthController {
      * <ul>
      *   <li>{@code 400 Bad Request} — ongeldige body (leeg veld, ongeldig e-mailadres, wachtwoord
      *       korter dan 8 tekens) of wachtwoord en bevestiging verschillen</li>
-     *   <li>{@code 409 Conflict} — het e-mailadres is al geregistreerd</li>
+     *   <li>{@code 409 Conflict} — het e-mailadres of het telefoonnummer is al geregistreerd</li>
      * </ul>
      *
      * @param registerRequest gegevens van de nieuwe gebruiker

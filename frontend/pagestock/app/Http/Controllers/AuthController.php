@@ -82,11 +82,15 @@ class AuthController extends Controller
      * De validatie volgt dezelfde regels als RegisterRequest in Spring. Bij een fout worden de
      * ingevulde velden teruggezet, behalve de wachtwoorden.
      *
+     * Bij 409 toont het formulier de melding van de API, die zegt of het e-mailadres of het
+     * telefoonnummer al in gebruik is. De melding verschijnt altijd bij het veld email.
+     *
      * Route: POST /register
      *
      * @param  Request  $request  formulier met firstName, lastName, email, password, confirmPassword en phoneNumber
      * @return \Illuminate\Http\RedirectResponse naar /login bij succes; terug naar het formulier bij
-     *                                           409 (e-mailadres al in gebruik) of een andere fout
+     *                                           409 (e-mailadres of telefoonnummer al in gebruik) of een
+     *                                           andere fout
      *
      * @throws \Illuminate\Validation\ValidationException als de formuliervelden ongeldig zijn
      */
@@ -107,14 +111,14 @@ class AuthController extends Controller
 
         if ($response->status() === 409) {
             return back()
-                ->withErrors(['email' => $response->json('message') ?? "Dit email of telefoonnummer is al in gebruik."])
+                ->withErrors(['error' => $response->json('message') ?? "Dit email of telefoonnummer is al in gebruik."])
                 ->withInput($request->except('password', 'confirmPassword'));
         }
 
 
         if ($response->failed()) {
             return back()
-                ->withErrors(['email' => $response->json('message') ?? 'Registratie mislukt, controleer je gegevens.'])
+                ->withErrors(['error' => $response->json('message') ?? 'Registratie mislukt, controleer je gegevens.'])
                 ->withInput($request->except('password', 'confirmPassword'));
         }
 
