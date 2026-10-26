@@ -17,6 +17,9 @@ class CartController extends Controller
      * Toont het winkelmandje met titel, prijs, aantal en de totaalprijs.
      *
      * Haalt alle boeken op via GET /books en houdt alleen de boeken uit het mandje over.
+     * Boeken die niet meer bestaan (bv. verwijderd door een admin) worden ook uit het mandje
+     * in de sessie gehaald, met een melding voor de gebruiker. Anders zouden ze onzichtbaar
+     * blijven en zou elke reservatie mislukken met een 404.
      *
      * Route: GET /cart
      *
@@ -48,10 +51,22 @@ class CartController extends Controller
             ])
             ->values();
 
-        // Totaalprijs = som van prijs * aantal
+
+        // Boeken die niet meer bestaan (bv. verwijderd door een admin) uit het mandje halen,
+        // anders blijven ze onzichtbaar in de sessie en faalt elke reservatie met een 404.
+        $validCart = $items->pluck('quantity', 'isbn')->all();
+
+
         $total = $items->sum(fn ($item) => $item['price'] * $item['quantity']);
 
+        if (count($validCart) < count($cart)) {
+            session(['cart' => $validCart]);
+
+            return view('reservations.cart-index', compact('items', 'total'))->withErrors(['cart' => 'Een of meer boeken bestaan niet meer en werden uit je winkelmandje verwijderd.']);
+        }
+
         return view('reservations.cart-index', compact('items', 'total'));
+
     }
 
     /**
