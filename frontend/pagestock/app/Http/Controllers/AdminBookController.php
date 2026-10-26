@@ -14,41 +14,6 @@ use Illuminate\Support\Facades\Http;
  */
 class AdminBookController extends Controller
 {
-    /**
-     * Maakt een HTTP-client voor de API met de basis-URL en het JWT-token uit de sessie.
-     *
-     * @return \Illuminate\Http\Client\PendingRequest
-     */
-    private function api()
-    {
-        return Http::withToken(session('token'))->baseUrl(config('services.backend.url'));
-    }
-
-    /**
-     * Zet een mislukte API-call om naar een redirect met een foutmelding.
-     *
-     * Bij 401 wordt het token uit de sessie gehaald en volgt een redirect naar /login. Bij 409
-     * wordt de melding van de API getoond, anders de standaardmelding. De ingevulde velden
-     * worden teruggezet in het formulier.
-     *
-     * @param  \Illuminate\Http\Client\Response  $response  het mislukte antwoord van de API
-     * @param  string                            $default   melding die wordt getoond als de API geen bruikbare melding geeft
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function error($response, string $default)
-    {
-        // 401: token verlopen -> opnieuw inloggen
-        if ($response->status() === 401) {
-            session()->forget('token');
-            return redirect()->route('login')->withErrors(['auth' => 'Je sessie is verlopen. Log opnieuw in.']);
-        }
-
-        // 409 komt van onze eigen exceptions (bv. ISBN bestaat al): die boodschap tonen we.
-        // Andere fouten (bv. 400) geven een technische boodschap, dus dan onze eigen tekst.
-        $message = $response->status() === 409 ? ($response->json('message') ?? $default) : $default;
-
-        return back()->withErrors(['admin' => $message])->withInput();
-    }
 
     /**
      * Geeft de validatieregels van het boekformulier terug.

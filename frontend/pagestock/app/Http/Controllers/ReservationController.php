@@ -85,10 +85,8 @@ class ReservationController extends Controller
 
 
         if ($response->status() === 401) {
-            session()->forget('token');
+            session()->forget(['token', 'role']);
             return redirect()->route('login')->withErrors(['cart' =>  'U bent niet ingelogd. Log in of register.']);
-
-
         }
 
         // 409: niet genoeg voorraad voor minstens één boek
@@ -125,7 +123,7 @@ class ReservationController extends Controller
 
 
         if ($response->failed()) {
-            return back()->withErrors(['reservation' => $response->json('message') ?? 'Annuleren mislukt.']);
+            return redirect()->route('login')->withErrors(['error' => 'U bent niet ingelogd.']);
         }
 
         return back()->with('success', 'Reservatie geannuleerd.');
@@ -146,8 +144,8 @@ class ReservationController extends Controller
     public function purchased()
     {
         $reservations = $this->api()->get('/reservations/me/purchased');
-        if($reservations->failed()){
-            return redirect()->route("catalog.index")->withErrors(['reservation' => $reservations->json('message') ?? 'Reservatie mislukt.']);
+        if ($reservations->failed()) {
+            return redirect()->route('login')->withErrors(['error' => 'U bent niet ingelogd.']);
         }
 
 

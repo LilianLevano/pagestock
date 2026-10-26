@@ -139,7 +139,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->session()->forget('token');
+        $request->session()->forget(['token', 'role']);
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();

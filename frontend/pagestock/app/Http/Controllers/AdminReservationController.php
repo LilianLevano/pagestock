@@ -26,8 +26,8 @@ class AdminReservationController extends Controller
      */
     public function index()
     {
-        $response = Http::withToken(session('token'))
-            ->get(config('services.backend.url') . '/reservations');
+
+        $response = $this->api()->get('/reservations');
 
         // Fout van de API (bv. 401, 403)
         if ($response->failed()) {
@@ -52,12 +52,11 @@ class AdminReservationController extends Controller
      */
     public function pickup($id)
     {
-        $response = Http::withToken(session('token'))
-            ->patch(config('services.backend.url') . '/reservations/' . $id . '/pickup');
 
+        $response = $this->api()->patch('/reservations/' . $id . '/pickup' );
 
         if ($response->failed()) {
-            return back()->withErrors(['reservation' =>  $response->json('message') ?? 'Bevestigen mislukt.']);
+            return $this->error($response, "Kan de reservaties ophalen.");
         }
 
         return back()->with('success', 'Afhaling bevestigd, de voorraad is aangepast.');
