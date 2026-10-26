@@ -42,6 +42,6 @@ abstract class Controller
         // 409: bv. nog gekoppeld aan boeken -> de boodschap van Spring tonen
         $message = $response->status() === 409 ? ($response->json('message') ?? $default) : $default;
 
-        return back()->withErrors(['admin' => $message]);
+        return back()->withErrors(['admin' => $message])->withInput();
     }
 }
