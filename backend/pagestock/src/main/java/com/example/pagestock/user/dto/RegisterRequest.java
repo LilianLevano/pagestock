@@ -19,9 +19,11 @@ import jakarta.validation.constraints.Size;
  */
 public record RegisterRequest(
         @NotBlank(message = "First name can not be empty." )
+        @Size(max = 50)
         String firstName,
 
         @NotBlank(message = "Last name can not be empty." )
+        @Size(max = 50)
         String lastName,
 
         @NotBlank(message = "Email name can not be empty." )
