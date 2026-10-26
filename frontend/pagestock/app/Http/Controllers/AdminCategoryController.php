@@ -87,7 +87,7 @@ class AdminCategoryController extends Controller
         $response = $this->api()->post('/categories', $data);
 
         if ($response->failed()) {
-            return $this->error($response, 'Auteur toevoegen mislukt.');
+            return $this->error($response, 'Categorie toevoegen mislukt.');
         }
 
         return back()->with('success', 'Categorie toegevoegd.');
