@@ -107,7 +107,7 @@ class AuthController extends Controller
 
         if ($response->status() === 409) {
             return back()
-                ->withErrors(['email' => 'Dit e-mailadres is al in gebruik.'])
+                ->withErrors(['email' => $response->json('message') ?? "Dit email of telefoonnummer is al in gebruik."])
                 ->withInput($request->except('password', 'confirmPassword'));
         }
 
