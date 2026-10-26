@@ -4,6 +4,7 @@ import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.exceptions.EmailAlreadyExistsException;
 import com.example.pagestock.exceptions.ItemNotFoundException;
 import com.example.pagestock.exceptions.PasswordNotEqualsConfirmPasswordException;
+import com.example.pagestock.exceptions.PhoneAlreadyExistsException;
 import com.example.pagestock.security.JwtService;
 import com.example.pagestock.user.dto.LoginRequest;
 import com.example.pagestock.user.dto.LoginResponse;
@@ -78,6 +79,10 @@ public class UserService {
 
         if (userRepository.existsByEmail(cleanEmail)) {
             throw new EmailAlreadyExistsException();
+        }
+
+        if(userRepository.existsByPhoneNumber(registerRequest.phoneNumber())) {
+            throw new PhoneAlreadyExistsException("A user with the same phone number already exists.");
         }
 
         String encodedPassword = passwordEncoder.encode(registerRequest.password());

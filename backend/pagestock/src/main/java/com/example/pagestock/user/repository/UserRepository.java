@@ -23,4 +23,11 @@ public interface UserRepository extends ListCrudRepository<User, Long> {
      * @return {@code true} als er al een gebruiker met dit e-mailadres bestaat
      */
     boolean existsByEmail(String email);
+
+    /**
+     *
+     * @param phoneNumber telefoonnummer in string
+     * @return {@code true} als er al een gebruiker met dit telefoonnummer bestaat
+     */
+    boolean existsByPhoneNumber(String phoneNumber);
 }
