@@ -1,7 +1,5 @@
 package com.example.pagestock.user.dto;
 
-import com.example.pagestock.user.model.Role;
-
 /**
  * Response na een geslaagde login.
  *

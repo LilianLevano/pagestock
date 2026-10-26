@@ -14,10 +14,8 @@ import com.example.pagestock.review.repository.ReviewRepository;
 import com.example.pagestock.user.model.User;
 import com.example.pagestock.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

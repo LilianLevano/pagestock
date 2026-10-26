@@ -1,7 +1,6 @@
 package com.example.pagestock.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import org.aspectj.weaver.ast.Not;
 
 /**
  * Request body voor het inloggen.

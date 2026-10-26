@@ -1,6 +1,5 @@
 package com.example.pagestock.user.service;
 
-import com.example.pagestock.catalog.repository.BookRepository;
 import com.example.pagestock.exceptions.EmailAlreadyExistsException;
 import com.example.pagestock.exceptions.ItemNotFoundException;
 import com.example.pagestock.exceptions.PasswordNotEqualsConfirmPasswordException;
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final BookRepository bookRepository;
 
     /**
      * Maakt de service aan met de benodigde afhankelijkheden.
@@ -46,15 +43,13 @@ public class UserService {
      * @param passwordEncoder       BCrypt-encoder om wachtwoorden te hashen
      * @param authenticationManager controleert e-mailadres en wachtwoord bij het inloggen
      * @param jwtService            maakt het JWT-token aan na een geslaagde login
-     * @param bookRepository        repository voor boeken (momenteel niet gebruikt in deze service)
      */
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService, BookRepository bookRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
-        this.bookRepository = bookRepository;
     }
 
 

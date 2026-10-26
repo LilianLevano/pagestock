@@ -1,7 +1,6 @@
 package com.example.pagestock.catalog.repository;
 
 import com.example.pagestock.catalog.model.Author;
-import com.example.pagestock.catalog.model.Category;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.example.pagestock.review.repository;
 
-import com.example.pagestock.reservation.model.ReservationStatus;
 import com.example.pagestock.review.model.Review;
 import org.springframework.data.repository.ListCrudRepository;
 
