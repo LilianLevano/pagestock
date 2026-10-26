@@ -2,31 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-
 /**
  * Reservaties van de ingelogde gebruiker: mandje omzetten naar een reservatie, eigen
  * reservaties bekijken en annuleren, en de afgehaalde boeken tonen.
  *
- * Alle routes staan achter {@see \App\Http\Middleware\EnsureApiToken}.
+ * Alle routes staan achter {@see \App\Http\Middleware\EnsureApiToken}. Een 401 van de API
+ * (token verlopen) wordt centraal afgehandeld via {@see Controller::api()}.
  */
 class ReservationController extends Controller
 {
     /**
-     * Maakt een HTTP-client voor de API met de basis-URL en het JWT-token uit de sessie.
-     *
-     * @return \Illuminate\Http\Client\PendingRequest
-     */
-    private function api()
-    {
-        return Http::withToken(session('token'))->baseUrl(config('services.backend.url'));
-    }
-
-    /**
      * Toont alle reservaties van de ingelogde gebruiker, de nieuwste eerst.
      *
-     * Roept GET /reservations/me van de API aan. Bij 401 (token verlopen) wordt het token uit
-     * de sessie gehaald en volgt een redirect naar /login.
+     * Roept GET /reservations/me van de API aan.
      *
      * Route: GET /reservations
      *
@@ -37,13 +25,7 @@ class ReservationController extends Controller
     {
         $response = $this->api()->get('/reservations/me');
 
-        // Token verlopen -> opnieuw inloggen
-        if ($response->status() === 401) {
-            session()->forget('token');
-            return redirect()->route('login');
-        }
-
-        // Andere fout van de API -> terug naar de catalogus met een melding
+        // Fout van de API -> terug naar de catalogus met een melding
         if ($response->failed()) {
             return redirect()->route('catalog.index')
                 ->withErrors(['reservation' => 'Je reservaties konden niet geladen worden.']);
@@ -64,8 +46,8 @@ class ReservationController extends Controller
      *
      * Route: POST /reservations
      *
-     * @return \Illuminate\Http\RedirectResponse naar "mijn reservaties" bij succes, naar /login bij 401,
-     *                                           anders terug naar het mandje met een foutmelding
+     * @return \Illuminate\Http\RedirectResponse naar "mijn reservaties" bij succes, anders terug naar
+     *                                           het mandje met een foutmelding
      */
     public function store()
     {
@@ -82,12 +64,6 @@ class ReservationController extends Controller
             ->all();
 
         $response = $this->api()->post('/reservations', ['lines' => $lines]);
-
-
-        if ($response->status() === 401) {
-            session()->forget(['token', 'role']);
-            return redirect()->route('login')->withErrors(['cart' =>  'U bent niet ingelogd. Log in of register.']);
-        }
 
         // 409: niet genoeg voorraad voor minstens één boek
         if ($response->status() === 409) {
@@ -121,9 +97,9 @@ class ReservationController extends Controller
     {
         $response = $this->api()->patch('/reservations/' . $id . '/cancel');
 
-
+        // Bv. 403: reservatie is al afgehaald of geannuleerd -> de melding van Spring tonen
         if ($response->failed()) {
-            return redirect()->route('login')->withErrors(['error' => 'U bent niet ingelogd.']);
+            return back()->withErrors(['reservation' => $response->json('message') ?? 'Annuleren mislukt.']);
         }
 
         return back()->with('success', 'Reservatie geannuleerd.');
@@ -145,7 +121,8 @@ class ReservationController extends Controller
     {
         $reservations = $this->api()->get('/reservations/me/purchased');
         if ($reservations->failed()) {
-            return redirect()->route('login')->withErrors(['error' => 'U bent niet ingelogd.']);
+            return redirect()->route('catalog.index')
+                ->withErrors(['reservation' => 'Je afgehaalde boeken konden niet geladen worden.']);
         }
 
 

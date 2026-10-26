@@ -40,15 +40,16 @@ class ReviewController extends Controller
     /**
      * Stuurt de review naar POST /books/{isbn}/reviews van de API.
      *
-     * Foutafhandeling: 401 -> redirect naar /login; 403 (boek niet afgehaald) en 409 (al een
-     * review) -> terug naar het formulier met de melding van de API; andere fouten -> algemene melding.
+     * Foutafhandeling: 403 (boek niet afgehaald) en 409 (al een review) -> terug naar het
+     * formulier met de melding van de API; andere fouten -> algemene melding. Een 401 wordt
+     * centraal afgehandeld via {@see Controller::api()}.
      *
      * Route: POST /books/{isbn}/reviews
      *
      * @param  Request  $request  formulier met rating (1 tot 5) en comment (max. 2000 tekens)
      * @param  string   $isbn     ISBN-nummer van het boek
      * @return \Illuminate\Http\RedirectResponse naar de detailpagina van het boek bij succes,
-     *                                           anders naar /login of terug naar het formulier
+     *                                           anders terug naar het formulier
      *
      * @throws \Illuminate\Validation\ValidationException als rating of comment ongeldig is
      */
@@ -60,15 +61,8 @@ class ReviewController extends Controller
             'comment' => 'required|string|max:2000',
         ]);
 
-        // Beschermde route: de JWT uit de sessie meesturen als Bearer-token
-        $response = Http::withToken(session('token'))
-            ->post(config('services.backend.url') . '/books/' . $isbn . '/reviews', $data);
-
-        // 401: token verlopen of ongeldig -> opnieuw inloggen
-        if ($response->status() === 401) {
-            session()->forget('token');
-            return redirect()->route('login')->withErrors(['error' => "U bent niet ingelogd."]);
-        }
+        // Beschermde route: api() stuurt de JWT uit de sessie mee als Bearer-token
+        $response = $this->api()->post('/books/' . $isbn . '/reviews', $data);
 
         // 403: de gebruiker heeft dit boek nog niet afgehaald
         if ($response->status() === 403) {

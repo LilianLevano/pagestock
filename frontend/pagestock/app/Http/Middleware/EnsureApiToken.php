@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Middleware die alleen ingelogde gebruikers doorlaat.
  *
  * "Ingelogd" betekent hier: er staat een JWT-token van de API in de sessie. Of dat token nog
- * geldig is, wordt niet gecontroleerd; dat merkt de controller pas als de API 401 antwoordt.
+ * geldig is, wordt hier niet gecontroleerd: antwoordt de API later met 401, dan stuurt
+ * {@see \App\Http\Controllers\Controller::api()} de gebruiker alsnog naar /login.
  */
 class EnsureApiToken
 {

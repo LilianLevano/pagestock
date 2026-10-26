@@ -29,7 +29,7 @@ class AdminReservationController extends Controller
 
         $response = $this->api()->get('/reservations');
 
-        // Fout van de API (bv. 401, 403)
+        // Fout van de API (bv. 403); een 401 wordt al door api() afgehandeld
         if ($response->failed()) {
             return redirect()->route('catalog.index')->withErrors(['error' => $response->json('message') ?? 'Kan de reservaties niet laden.']);
         }
