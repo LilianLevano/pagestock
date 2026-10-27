@@ -12,8 +12,6 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-// Deze klasse doet maar twee dingen: een token MAKEN (bij login)
-// en een token CONTROLEREN (bij elke volgende request).
 /**
  * Maakt en controleert JWT-tokens, ondertekend met HMAC-SHA256.
  * <p>
@@ -45,7 +43,6 @@ public class JwtService {
         this.expirationMs = expirationMs;
     }
 
-    // Wordt opgeroepen na een geslaagde login.
     /**
      * Maakt een nieuw ondertekend token voor een gebruiker.
      *

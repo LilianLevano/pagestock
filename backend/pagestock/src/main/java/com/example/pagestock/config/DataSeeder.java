@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-// Vult de databank met testdata bij het opstarten van de applicatie
 /**
  * Vult de database met testdata bij het opstarten van de applicatie.
  * <p>
@@ -66,13 +65,11 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         seedUser("Test", "User", "user@gmail.com", "user1234", "0470000001", Role.USER);
         seedUser("Test", "Admin", "admin@gmail.com", "admin1234", "0470000002", Role.ADMIN);
-        // Er zijn al boeken: niets doen, anders krijgen we dubbele data
+
         if (bookRepository.count() > 0) {
             return;
         }
 
-        // Eerst categorieën en auteurs opslaan: Book heeft geen cascade,
-        // dus ze moeten al een id hebben voor we ze aan een boek koppelen
         Category fiction = categoryRepository.save(new Category("Fiction"));
         Category fantasy = categoryRepository.save(new Category("Fantasy"));
         Category sciFi = categoryRepository.save(new Category("Science Fiction"));
@@ -92,7 +89,6 @@ public class DataSeeder implements CommandLineRunner {
         Author johnson = authorRepository.save(new Author("Ralph Johnson"));
         Author vlissides = authorRepository.save(new Author("John Vlissides"));
 
-        // Daarna de boeken, in één keer opgeslagen met saveAll
         bookRepository.saveAll(List.of(
                 book("9780451524935", "1984", "A dystopian novel about Big Brother and total surveillance.",
                         "9.99", LocalDate.of(1949, 6, 8), 10L, classics, Set.of(orwell)),
@@ -125,7 +121,6 @@ public class DataSeeder implements CommandLineRunner {
      */
     private void seedUser(String firstName, String lastName, String email, String rawPassword,
                           String phoneNumber, Role role) {
-        // Gebruiker bestaat al: niets doen (e-mail is uniek in de databank)
         if (userRepository.existsByEmail(email)) {
             return;
         }
