@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 /**
  * Reviews schrijven voor een boek.
@@ -18,9 +22,10 @@ class ReviewController extends Controller
      *
      * Route: GET /books/{isbn}/reviews/create
      *
-     * @param  string  $isbn  ISBN-nummer van het boek
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reviews.create met $book,
+     * @param string $isbn ISBN-nummer van het boek
+     * @return View|RedirectResponse de view reviews.create met $book,
      *                                                                 of terug als het boek niet bestaat
+     * @throws ConnectionException
      */
     public function create($isbn)
     {
@@ -48,10 +53,10 @@ class ReviewController extends Controller
      *
      * @param  Request  $request  formulier met rating (1 tot 5) en comment (max. 2000 tekens)
      * @param  string   $isbn     ISBN-nummer van het boek
-     * @return \Illuminate\Http\RedirectResponse naar de detailpagina van het boek bij succes,
+     * @return RedirectResponse naar de detailpagina van het boek bij succes,
      *                                           anders terug naar het formulier
      *
-     * @throws \Illuminate\Validation\ValidationException als rating of comment ongeldig is
+     * @throws ValidationException|ConnectionException als rating of comment ongeldig is
      */
     public function store(Request $request, $isbn)
     {

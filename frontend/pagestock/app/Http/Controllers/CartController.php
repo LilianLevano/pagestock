@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 /**
  * Winkelmandje van de ingelogde gebruiker.
@@ -23,9 +26,10 @@ class CartController extends Controller
      *
      * Route: GET /cart
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reservations.cart-index
+     * @return View|RedirectResponse de view reservations.cart-index
      *                                                                 met $items en $total, of een redirect
      *                                                                 naar de catalogus als de API faalt
+     * @throws ConnectionException
      */
     public function index()
     {
@@ -76,7 +80,7 @@ class CartController extends Controller
      * Route: POST /cart/add/{isbn}
      *
      * @param  string  $isbn  ISBN-nummer van het boek
-     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina met een succesmelding
+     * @return RedirectResponse terug naar de vorige pagina met een succesmelding
      */
     public function add($isbn)
     {
@@ -94,7 +98,7 @@ class CartController extends Controller
      * Route: POST /cart/remove/{isbn}
      *
      * @param  string  $isbn  ISBN-nummer van het boek
-     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina
+     * @return RedirectResponse terug naar de vorige pagina
      */
     public function remove($isbn)
     {

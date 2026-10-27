@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -17,7 +20,7 @@ abstract class Controller
      * bootstrap/app.php: de gebruiker wordt uitgelogd en naar /login gestuurd. De controllers
      * hoeven een 401 dus nooit zelf af te handelen.
      *
-     * @return \Illuminate\Http\Client\PendingRequest
+     * @return PendingRequest
      */
     public function api()
     {
@@ -33,9 +36,9 @@ abstract class Controller
      * getoond, anders de standaardmelding. Een 401 komt hier nooit aan: die wordt al door
      * {@see api()} afgehandeld.
      *
-     * @param  \Illuminate\Http\Client\Response  $response  het mislukte antwoord van de API
+     * @param  Response  $response  het mislukte antwoord van de API
      * @param  string                            $default   melding die wordt getoond als de API geen bruikbare melding geeft
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function error($response, string $default)
     {

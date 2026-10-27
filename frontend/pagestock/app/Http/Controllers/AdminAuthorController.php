@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Beheer van de auteurs door een admin, alles op één pagina: lijst, toevoegen, wijzigen en
@@ -19,9 +23,9 @@ class AdminAuthorController extends Controller
      *
      * Route: GET /admin/authors
      *
-     * @return \Illuminate\View\View de view admin.authors.authors met $items
+     * @return View de view admin.authors.authors met $items
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException met de statuscode van de API als die faalt
+     * @throws HttpException|ConnectionException met de statuscode van de API als die faalt
      */
     public function index()
     {
@@ -42,9 +46,9 @@ class AdminAuthorController extends Controller
      * Route: POST /admin/authors
      *
      * @param  Request  $request  formulier met name
-     * @return \Illuminate\Http\RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
+     * @return RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
      *
-     * @throws \Illuminate\Validation\ValidationException als de naam ontbreekt
+     * @throws ValidationException|ConnectionException als de naam ontbreekt
      */
     public function store(Request $request)
     {
@@ -66,9 +70,9 @@ class AdminAuthorController extends Controller
      *
      * @param  Request     $request  formulier met name
      * @param  int|string  $id       id van de auteur
-     * @return \Illuminate\Http\RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
+     * @return RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
      *
-     * @throws \Illuminate\Validation\ValidationException als de naam ontbreekt
+     * @throws ValidationException|ConnectionException als de naam ontbreekt
      */
     public function update(Request $request, $id)
     {
@@ -88,8 +92,9 @@ class AdminAuthorController extends Controller
      *
      * Route: DELETE /admin/authors/{id}
      *
-     * @param  int|string  $id  id van de auteur
-     * @return \Illuminate\Http\RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
+     * @param int|string $id id van de auteur
+     * @return RedirectResponse terug naar de pagina, met een succesmelding of zie {@see error()}
+     * @throws ConnectionException
      */
     public function destroy($id)
     {

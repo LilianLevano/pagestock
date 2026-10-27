@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+
 /**
  * Reservaties van de ingelogde gebruiker: mandje omzetten naar een reservatie, eigen
  * reservaties bekijken en annuleren, en de afgehaalde boeken tonen.
@@ -18,8 +22,9 @@ class ReservationController extends Controller
      *
      * Route: GET /reservations
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reservations.reservations-index
+     * @return View|RedirectResponse de view reservations.reservations-index
      *                                                                 met $reservations, of een redirect bij een fout
+     * @throws ConnectionException
      */
     public function index()
     {
@@ -46,8 +51,9 @@ class ReservationController extends Controller
      *
      * Route: POST /reservations
      *
-     * @return \Illuminate\Http\RedirectResponse naar "mijn reservaties" bij succes, anders terug naar
+     * @return RedirectResponse naar "mijn reservaties" bij succes, anders terug naar
      *                                           het mandje met een foutmelding
+     * @throws ConnectionException
      */
     public function store()
     {
@@ -90,8 +96,9 @@ class ReservationController extends Controller
      *
      * Route: PATCH /reservations/{id}/cancel
      *
-     * @param  int|string  $id  id van de reservatie
-     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina met een succes- of foutmelding
+     * @param int|string $id id van de reservatie
+     * @return RedirectResponse terug naar de vorige pagina met een succes- of foutmelding
+     * @throws ConnectionException
      */
     public function cancel($id)
     {
@@ -113,9 +120,10 @@ class ReservationController extends Controller
      *
      * Route: GET /my-books
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view reservations.reservations-purchased
+     * @return View|RedirectResponse de view reservations.reservations-purchased
      *                                                                 met $books (reservatielijnen), of een redirect
      *                                                                 naar de catalogus als de API faalt
+     * @throws ConnectionException
      */
     public function purchased()
     {

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Beheer van de boeken door een admin: lijst, toevoegen, wijzigen en verwijderen.
@@ -45,6 +49,7 @@ class AdminBookController extends Controller
      * Haalt de auteurs en categorieën op voor de keuzelijsten in het formulier.
      *
      * @return array{authors: array, categories: array} lege lijsten als de API geen data teruggeeft
+     * @throws ConnectionException
      */
     private function formData(): array
     {
@@ -59,9 +64,9 @@ class AdminBookController extends Controller
      *
      * Route: GET /admin/books
      *
-     * @return \Illuminate\View\View de view admin.books.index met $books
+     * @return View de view admin.books.index met $books
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException met de statuscode van de API als die faalt
+     * @throws HttpException|ConnectionException met de statuscode van de API als die faalt
      */
     public function index()
     {
@@ -81,7 +86,8 @@ class AdminBookController extends Controller
      *
      * Route: GET /admin/books/create
      *
-     * @return \Illuminate\View\View de view admin.books.form met $book = null, $authors en $categories
+     * @return View de view admin.books.form met $book = null, $authors en $categories
+     * @throws ConnectionException
      */
     public function create()
     {
@@ -95,9 +101,9 @@ class AdminBookController extends Controller
      *
      * @param  Request  $request  formulier met isbnNumber, title, description, price, publicationDate,
      *                            stock, categoryId en authorIds
-     * @return \Illuminate\Http\RedirectResponse naar de boekenlijst bij succes, anders zie {@see error()}
+     * @return RedirectResponse naar de boekenlijst bij succes, anders zie {@see error()}
      *
-     * @throws \Illuminate\Validation\ValidationException als het formulier ongeldig is
+     * @throws ValidationException|ConnectionException als het formulier ongeldig is
      */
     public function store(Request $request)
     {
@@ -120,9 +126,9 @@ class AdminBookController extends Controller
      * Route: GET /admin/books/{isbn}/edit
      *
      * @param  string  $isbn  ISBN-nummer van het boek
-     * @return \Illuminate\View\View de view admin.books.form met $book, $authors en $categories
+     * @return View de view admin.books.form met $book, $authors en $categories
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException 404 als het boek niet geladen kan worden
+     * @throws HttpException|ConnectionException 404 als het boek niet geladen kan worden
      */
     public function edit($isbn)
     {
@@ -144,9 +150,9 @@ class AdminBookController extends Controller
      * @param  Request  $request  formulier met title, description, price, publicationDate, stock,
      *                            categoryId en authorIds
      * @param  string   $isbn     ISBN-nummer van het boek
-     * @return \Illuminate\Http\RedirectResponse naar de boekenlijst bij succes, anders zie {@see error()}
+     * @return RedirectResponse naar de boekenlijst bij succes, anders zie {@see error()}
      *
-     * @throws \Illuminate\Validation\ValidationException als het formulier ongeldig is
+     * @throws ValidationException|ConnectionException als het formulier ongeldig is
      */
     public function update(Request $request, $isbn)
     {
@@ -167,9 +173,10 @@ class AdminBookController extends Controller
      *
      * Route: DELETE /admin/books/{isbn}
      *
-     * @param  string  $isbn  ISBN-nummer van het boek
-     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina, met een succesmelding
+     * @param string $isbn ISBN-nummer van het boek
+     * @return RedirectResponse terug naar de vorige pagina, met een succesmelding
      *                                           of zie {@see error()}
+     * @throws ConnectionException
      */
     public function destroy($isbn)
     {

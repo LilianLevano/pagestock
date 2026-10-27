@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Middleware die alleen gebruikers met de rol ADMIN doorlaat.
@@ -22,7 +23,7 @@ class EnsureAdmin
      * @param  Closure  $next     de volgende stap in de middleware-keten
      * @return Response de response van de volgende stap
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException 403 als de rol in de sessie geen ADMIN is
+     * @throws HttpException 403 als de rol in de sessie geen ADMIN is
      */
     public function handle(Request $request, Closure $next): Response
     {

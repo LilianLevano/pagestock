@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
 /**
@@ -21,8 +24,9 @@ class CatalogController extends Controller
      *
      * Route: GET /
      *
-     * @param  Request  $request  request met de optionele queryparameter search
-     * @return \Illuminate\View\View de view welcome met de variabele $books
+     * @param Request $request request met de optionele queryparameter search
+     * @return View de view welcome met de variabele $books
+     * @throws ConnectionException
      */
     public function index(Request $request){
 
@@ -55,9 +59,9 @@ class CatalogController extends Controller
      * Route: GET /books/{id}
      *
      * @param  string  $isbnNumber  ISBN-nummer van het boek
-     * @return \Illuminate\View\View de view books.book met $book en $reviews
+     * @return View de view books.book met $book en $reviews
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException met de statuscode van de API
+     * @throws HttpException|ConnectionException met de statuscode van de API
      *                                                               (bv. 404) als het boek niet geladen kan worden
      */
     public function show($isbnNumber)

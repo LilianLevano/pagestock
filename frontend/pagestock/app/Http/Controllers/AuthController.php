@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 /**
  * Registratie, login en logout via de API (/auth).
@@ -18,7 +22,7 @@ class AuthController extends Controller
      *
      * Route: GET /login
      *
-     * @return \Illuminate\View\View de view auth.login
+     * @return View de view auth.login
      */
     public function showLogin()
     {
@@ -35,9 +39,9 @@ class AuthController extends Controller
      * Route: POST /login
      *
      * @param  Request  $request  formulier met email en password
-     * @return \Illuminate\Http\RedirectResponse naar de catalogus bij succes, anders terug naar het formulier
+     * @return RedirectResponse naar de catalogus bij succes, anders terug naar het formulier
      *
-     * @throws \Illuminate\Validation\ValidationException als email of password ontbreekt of ongeldig is
+     * @throws ValidationException|ConnectionException als email of password ontbreekt of ongeldig is
      */
     public function login(Request $request)
     {
@@ -68,7 +72,7 @@ class AuthController extends Controller
      *
      * Route: GET /register
      *
-     * @return \Illuminate\View\View de view auth.register
+     * @return View de view auth.register
      */
     public function showRegister()
     {
@@ -88,11 +92,11 @@ class AuthController extends Controller
      * Route: POST /register
      *
      * @param  Request  $request  formulier met firstName, lastName, email, password, confirmPassword en phoneNumber
-     * @return \Illuminate\Http\RedirectResponse naar /login bij succes; terug naar het formulier bij
+     * @return RedirectResponse naar /login bij succes; terug naar het formulier bij
      *                                           409 (e-mailadres of telefoonnummer al in gebruik) of een
      *                                           andere fout
      *
-     * @throws \Illuminate\Validation\ValidationException als de formuliervelden ongeldig zijn
+     * @throws ValidationException|ConnectionException als de formuliervelden ongeldig zijn
      */
     public function register(Request $request)
     {
@@ -135,7 +139,7 @@ class AuthController extends Controller
      * Route: POST /logout
      *
      * @param  Request  $request  de request van de ingelogde gebruiker
-     * @return \Illuminate\Http\RedirectResponse naar de catalogus
+     * @return RedirectResponse naar de catalogus
      */
     public function logout(Request $request)
     {

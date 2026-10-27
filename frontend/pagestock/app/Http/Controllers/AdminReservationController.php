@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 /**
  * Beheer van de reservaties door een admin: openstaande reservaties bekijken en afhalingen
@@ -20,9 +23,10 @@ class AdminReservationController extends Controller
      *
      * Route: GET /admin/reservations
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse de view admin.reservations
+     * @return View|RedirectResponse de view admin.reservations
      *                                                                 met $reservations, of een redirect
      *                                                                 naar de catalogus als de API faalt
+     * @throws ConnectionException
      */
     public function index()
     {
@@ -46,9 +50,10 @@ class AdminReservationController extends Controller
      *
      * Route: PATCH /admin/reservations/{id}/pickup
      *
-     * @param  int|string  $id  id van de reservatie
-     * @return \Illuminate\Http\RedirectResponse terug naar de vorige pagina met een succes- of foutmelding
+     * @param int|string $id id van de reservatie
+     * @return RedirectResponse terug naar de vorige pagina met een succes- of foutmelding
      *                                           (bv. 409 als de voorraad intussen onvoldoende is)
+     * @throws ConnectionException
      */
     public function pickup($id)
     {
