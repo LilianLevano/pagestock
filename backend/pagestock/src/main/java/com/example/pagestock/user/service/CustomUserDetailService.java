@@ -54,7 +54,6 @@ public class CustomUserDetailService implements UserDetailsService {
                 // getypte wachtwoord via passwordEncoder.matches(...): wij doen dat niet.
                 .password(user.getPassword())
                 // roles("USER") wordt de autoriteit "ROLE_USER".
-                // Dinsdag controleert hasRole("ADMIN") op "ROLE_ADMIN".
                 .roles(user.getRole().name())
                 .build();
     }

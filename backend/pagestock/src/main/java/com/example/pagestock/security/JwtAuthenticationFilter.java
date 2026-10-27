@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // "Bearer " is 7 tekens: de rest is het token zelf.
+        // "Bearer" is 7 tekens: de rest is het token zelf.
         String token = header.substring(7);
 
         try {
