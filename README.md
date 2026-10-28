@@ -22,7 +22,6 @@ Het project bestaat uit een Spring Boot-backend (REST API) en een Laravel/Blade-
 - [x] Admin bevestigt de afhaling: de voorraad van elk boek wordt verlaagd
 - [x] Overzicht van de gekochte (afgehaalde) boeken in het profiel ("Mijn boeken")
 - [x] Reviews (score van 1 tot 5 en tekst) op de detailpagina van een boek, alleen voor wie het boek heeft afgehaald, één review per boek
-- [x] Een review verwijderen (eigen review, of elke review als admin)
   
 
 ## 2. Architectuur
@@ -60,7 +59,6 @@ Domeinen zijn van elkaar gescheiden: er bestaat geen JPA-relatie tussen entiteit
 
 - `ReservationService` vraagt aan `BookService` of een boek bestaat en genoeg voorraad heeft, en laat `BookService.decreaseStock` de voorraad verlagen bij een afhaling. Alleen het domein `catalog` wijzigt de voorraad.
 - `ReviewService` vraagt aan `ReservationService.hasPickedUp` of de gebruiker het boek heeft afgehaald voor hij een review mag plaatsen.
-Zo kan elk domein afzonderlijk gelezen, getest en aangepast worden.
 
 ### Opbouw van de frontend
  
@@ -97,23 +95,41 @@ Zo kan elk domein afzonderlijk gelezen, getest en aangepast worden.
 - Node.js en npm (voor Vite en Tailwind CSS)
   
 ## 4. Installatie en opstarten
+Eerst en vooral, clone deze repository in een folder.
+
+```bash
+git clone https://github.com/LilianLevano/pagestock
+```
 
 Start eerst de backend, daarna de frontend.
  
 ### Backend
  
 1. Maak een lege MySQL-database aan: `CREATE DATABASE pagestock;`
-2. Kopieer in `backend/pagestock/src/main/resources/` het bestand `application.properties.example` naar `application.properties` en vul de MySQL-gebruiker en het wachtwoord in, evenals het JWT-geheim:
+2. Kopieer in `backend/pagestock/src/main/resources/` het bestand `application.properties.example` naar `application.properties`.
+
+Powershell: 
+
+```bash
+cp application.properties.example application.properties
+```
+```powershell
+notepad application.properties
+``` 
+
+En vul de MySQL-gebruiker en het wachtwoord in, evenals het JWT-geheim:
    ```properties
    spring.datasource.username=root
    spring.datasource.password=jouw-wachtwoord
    jwt.secret=een-lange-geheime-zin-van-minstens-32-tekens
    ```
-   Het geheim moet minstens 32 tekens lang zijn (256 bits), anders start de applicatie niet.
+Wees zeker dat "spring.datasource.url=" naar het juist Database adres wijst.
+Het geheim moet minstens 32 tekens lang zijn (256 bits), anders start de applicatie niet.
+
 3. Starten:
    ```bash
    cd backend/pagestock
-   ./mvnw spring-boot:run
+   mvn spring-boot:run
    ```
 
 De tabellen worden automatisch aangemaakt (`ddl-auto=update`). De API is bereikbaar op `http://localhost:8080`.
@@ -134,15 +150,21 @@ UPDATE users SET role = 'ADMIN' WHERE email = 'jouw@email.com';
 ```
 
 ### Frontend
+
+Houdt de terminal die de backend draait open, anders sluit de API.
  
 ```bash
 cd frontend/pagestock
 cp .env.example .env
 ```
+
+```bash
+notepad .env
+```
 Vul in .env API_URL in (bv. http://localhost:8080)
 
 ```bash
-composer install
+composer install //kan redelijk veel tijd nemen als het de eerste keer is
 php artisan key:generate
 php artisan migrate
 ```
@@ -150,10 +172,10 @@ Na artisan migrate, gaat de console je vragen om een SQLite database file te gen
 
 De SQLite-database van Laravel bevat geen boeken of gebruikers: ze dient alleen om de sessies op te slaan (`SESSION_DRIVER=database`).
 
+Nu, start de applicatie met:
 ```bash
 php artisan serve
 ```
-
 
 De applicatie is bereikbaar op `http://127.0.0.1:8000`. (Kan anders zijn, check het gegeven adres in de console.)  
 
@@ -163,7 +185,7 @@ De applicatie is bereikbaar op `http://127.0.0.1:8000`. (Kan anders zijn, check 
 ### Authenticatie
 
 1. Registreer met `POST /auth/register`.
-2. Log in met `POST /auth/login`: het antwoord bevat een token.
+2. Log in met `POST /auth/login`: het antwoord bevat een token met de role van de ingelogde user (ADMIN of USER).
 3. Stuur dat token mee in de header van elke beveiligde request:
 ```
 Authorization: Bearer <token>
@@ -256,7 +278,7 @@ Een reservatie heeft een status: `RESERVED` (in afwachting), `PICKED_UP` (afgeha
 | POST | `/reservations` | user | Maakt een reservatie met status `RESERVED` | 201, 400 als een boek twee keer voorkomt, 404 als een boek onbekend is, 409 als de lijst leeg is |
 | GET | `/reservations/me` | user | Alle reservaties van de ingelogde gebruiker | 200 |
 | GET | `/reservations/me/purchased` | user | Afgehaalde reservaties van de gebruiker (gekochte boeken) | 200 |
-| PATCH | `/reservations/{id}/cancel` | user | Annuleert een eigen reservatie | 200, 403 als de reservatie niet meer `RESERVED` is, 404 |
+| PATCH | `/reservations/{id}/cancel` | user | Annuleert een eigen reservatie of wordt door een admin geannuleert | 200, 403 als de reservatie niet meer `RESERVED` is, 404 |
 | GET | `/reservations` | admin | Alle reservaties die nog afgehaald moeten worden | 200 |
 | PATCH | `/reservations/{id}/pickup` | admin | Bevestigt de afhaling: status `PICKED_UP` en voorraad verlaagd | 200, 403 als de reservatie niet meer `RESERVED` is, 404, 409 als de voorraad intussen te laag is |
  
@@ -330,8 +352,37 @@ De API werd daarnaast manueel getest met Postman (bv. `POST /authors` zonder tok
 
 ## 7. Documentatie van de code
  
-<!-- NOG AAN TE VULLEN -->
+De code van beide applicaties is gedocumenteerd met doc comments: JavaDoc in de backend, PhpDoc in de frontend. Elke klasse en elke publieke methode heeft een beschrijving in het Nederlands; technische termen (controller, service, token, …) blijven in het Engels. Uit die comments werd een HTML-documentatie gegenereerd, die mee in de repository staat.
 
+Wat beschreven wordt:
+
+- per klasse: haar rol en, waar nodig, de regels die ze afdwingt (bv. de statussen van een reservatie in `ReservationService`, de toegang per route in de controllers);
+- per methode: wat ze doet, de parameters (`@param`), het resultaat (`@return`) en de excepties die ze kan gooien (`@throws`);
+- in de controllers van de backend: het endpoint en de mogelijke HTTP-statuscodes;
+- in de controllers van de frontend: de Laravel-route, de aangeroepen API-route en de getoonde view.
+
+Korte comments (`//`) in de code verduidelijken enkel de stappen die niet meteen duidelijk zijn.
+
+### Backend (JavaDoc)
+
+De documentatie staat in `backend/pagestock/docs/javadoc/`. Open `index.html` in een browser.
+
+Ze bevat alle packages per domein (`catalog`, `user`, `reservation`, `review`) en de gedeelde packages (`config`, `security`, `exceptions`).
+
+Opnieuw genereren: in IntelliJ via *Tools > Generate JavaDoc...*, met `docs/javadoc` als output-map.
+
+### Frontend (PhpDoc)
+
+De documentatie werd gegenereerd met phpDocumentor (`phpdocumentor/shim`, dev-dependency in `composer.json`) en staat in `frontend/pagestock/docs/phpDoc/`. Open `index.html` in een browser.
+
+Ze bevat de klassen uit de map `app`: de controllers, de middleware (`EnsureApiToken`, `EnsureAdmin`) et de Blade-componenten.
+
+Opnieuw genereren:
+
+```bash
+cd frontend/pagestock
+vendor/bin/phpdoc -d app -t docs/phpDoc
+```
 ## 8. Planning
  
 Het project werd gebouwd in vier fasen. Elke commit begint met het onderdeel (`BACKEND`, `FRONTEND`, `DOCS`), zodat de volledige voortgang in de Git-geschiedenis te volgen is.
@@ -362,6 +413,7 @@ Het project werd gebouwd in vier fasen. Elke commit begint met het onderdeel (`B
   - nalezen van mijn code, met verbeteringen en uitleg die ik begrepen heb voor ik ze toepaste;
   - uitleg over concepten (IoC, Spring Data-methodes, transacties, HTTP-statuscodes);
   - **Spring Security en JWT**: dit onderwerp werd niet in de les behandeld. Hier gaf Claude code met uitleg (`SecurityConfig`, `CustomUserDetailsService`, `JwtService`, `JwtAuthenticationFilter`), die ik zelf heb overgetypt en waarover ik controlevragen kreeg. Details staan in [backend/pagestock/docs/journal-auth.md](backend/pagestock/docs/journal-auth.md);
-  - **frontend (Laravel/Blade)**: Controllers heb ik grotendeels zelf geschreven, Blade paginas (met Tailwind CSS) werden gegenereerd en door mezelf gecontroleerd en aangepast
-  - hulp bij het opstellen van deze README.
+  - **frontend (Laravel/Blade)**: Controllers heb ik grotendeels zelf geschreven, dan door AI laten herlezen om ze beter te maken. Blade paginas (met Tailwind CSS) werden gegenereerd en door mezelf gecontroleerd en aangepast
+  - hulp en correctie bij het opstellen van deze README.
 - De rest van de code heb ik zelf geschreven.
+Links naar de respectieve chats kan ik niet delen aangezien ik "Claud Project" heb gebruikt, waardoor de deling onmogelijk is. (Dit wist ik niet voordat ik het gebruikte)
