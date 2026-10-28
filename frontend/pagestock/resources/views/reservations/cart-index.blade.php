@@ -32,6 +32,10 @@
 
                             <span class="text-gray-500">× € {{ number_format($item['price'], 2, ',', '.') }}</span>
                         </div>
+                        <form method="POST" action="{{ route('cart.remove', $item['isbn']) }}">
+                            @csrf
+                            <button type="submit" class="text-sm text-red-600 hover:underline">Verwijderen</button>
+                        </form>
                     </div>
                 @endforeach
             </div>

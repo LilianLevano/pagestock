@@ -119,7 +119,7 @@ class CartController extends Controller
 
         session(['cart' => $cart]);
 
-        return back();
+        return back()->with('succes', 'Boek verwijderd van je winkelmandje.');
     }
 
     /**
