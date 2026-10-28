@@ -17,10 +17,21 @@
                                 {{ $item['quantity'] }} × € {{ number_format($item['price'], 2, ',', '.') }}
                             </p>
                         </div>
-                        <form method="POST" action="{{ route('cart.remove', $item['isbn']) }}">
-                            @csrf
-                            <button type="submit" class="text-sm text-red-600 hover:underline">Verwijderen</button>
-                        </form>
+                        <div class="flex items-center gap-2 mt-1 text-sm">
+                            <form method="POST" action="{{ route('cart.decrease', $item['isbn']) }}">
+                                @csrf
+                                <button type="submit" class="w-7 h-7 border rounded hover:bg-gray-100">−</button>
+                            </form>
+
+                            <span class="text-gray-900">{{ $item['quantity'] }}</span>
+
+                            <form method="POST" action="{{ route('cart.add', $item['isbn']) }}">
+                                @csrf
+                                <button type="submit" class="w-7 h-7 border rounded hover:bg-gray-100">+</button>
+                            </form>
+
+                            <span class="text-gray-500">× € {{ number_format($item['price'], 2, ',', '.') }}</span>
+                        </div>
                     </div>
                 @endforeach
             </div>

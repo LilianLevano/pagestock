@@ -33,6 +33,7 @@ Route::middleware(EnsureApiToken::class)->group(function () {
     // Winkelmandje
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{isbn}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/decrease/{isbn}', [CartController::class, 'decrease'])->name('cart.decrease');
     Route::post('/cart/remove/{isbn}', [CartController::class, 'remove'])->name('cart.remove');
 
     // Reservaties van de gebruiker

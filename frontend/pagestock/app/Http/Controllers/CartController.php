@@ -93,6 +93,36 @@ class CartController extends Controller
     }
 
     /**
+     * Verwijdert één exemplaar van een boek uit het mandje. Bij het laatste exemplaar
+     * verdwijnt het boek volledig uit het mandje.
+     *
+     * Route: POST /cart/decrease/{isbn}
+     *
+     * @param  string  $isbn  ISBN-nummer van het boek
+     * @return RedirectResponse terug naar de vorige pagina
+     */
+    public function decrease($isbn)
+    {
+        $cart = session('cart', []);
+
+        // Boek niet in het mandje? Niets te doen
+        if (! isset($cart[$isbn])) {
+            return back();
+        }
+
+        // Laatste exemplaar? Dan het boek weghalen, anders -1
+        if ($cart[$isbn] <= 1) {
+            unset($cart[$isbn]);
+        } else {
+            $cart[$isbn]--;
+        }
+
+        session(['cart' => $cart]);
+
+        return back();
+    }
+
+    /**
      * Verwijdert een boek volledig uit het mandje, ongeacht het aantal exemplaren.
      *
      * Route: POST /cart/remove/{isbn}

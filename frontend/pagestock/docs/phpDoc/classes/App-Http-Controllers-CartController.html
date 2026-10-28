@@ -190,6 +190,14 @@ gecontroleerd; dat doet de API pas bij het reserveren.</dd>
 <dd>Maakt een HTTP-client voor de API met de basis-URL en het JWT-token uit de sessie.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/App-Http-Controllers-CartController.html#method_decrease">decrease()</a>
+    <span>
+                                &nbsp;: <abbr title="\Illuminate\Http\RedirectResponse">RedirectResponse</abbr>    </span>
+</dt>
+<dd>Verwijdert één exemplaar van een boek uit het mandje. Bij het laatste exemplaar
+verdwijnt het boek volledig uit het mandje.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/App-Http-Controllers-Controller.html#method_error">error()</a>
     <span>
                                 &nbsp;: <abbr title="\Illuminate\Http\RedirectResponse">RedirectResponse</abbr>    </span>
@@ -323,6 +331,64 @@ hoeven een 401 dus nooit zelf af te handelen.</p>
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\Client\PendingRequest">PendingRequest</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_decrease">
+        decrease()
+        <a href="classes/App-Http-Controllers-CartController.html#method_decrease" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="app/Http/Controllers/CartController.php"><a href="files/app-http-controllers-cartcontroller.html"><abbr title="app/Http/Controllers/CartController.php">CartController.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">104</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Verwijdert één exemplaar van een boek uit het mandje. Bij het laatste exemplaar
+verdwijnt het boek volledig uit het mandje.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">decrease</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isbn</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\RedirectResponse">RedirectResponse</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Route: POST /cart/decrease/{isbn}</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-argument-list__argument__name">$isbn</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>ISBN-nummer van het boek</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        
+    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Illuminate\Http\RedirectResponse">RedirectResponse</abbr></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>terug naar de vorige pagina</p>
+</section>
+
             </section>
 
 </article>
@@ -469,7 +535,7 @@ naar de catalogus als de API faalt</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="app/Http/Controllers/CartController.php"><a href="files/app-http-controllers-cartcontroller.html"><abbr title="app/Http/Controllers/CartController.php">CartController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">103</span>
+    <span class="phpdocumentor-element-found-in__line">133</span>
 
     </aside>
 
@@ -536,6 +602,7 @@ naar de catalogus als de API faalt</p>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/App-Http-Controllers-CartController.html#method_add">add()</a></li>
                                             <li class=""><a href="classes/App-Http-Controllers-Controller.html#method_api">api()</a></li>
+                                            <li class=""><a href="classes/App-Http-Controllers-CartController.html#method_decrease">decrease()</a></li>
                                             <li class=""><a href="classes/App-Http-Controllers-Controller.html#method_error">error()</a></li>
                                             <li class=""><a href="classes/App-Http-Controllers-CartController.html#method_index">index()</a></li>
                                             <li class=""><a href="classes/App-Http-Controllers-CartController.html#method_remove">remove()</a></li>

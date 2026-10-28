@@ -156,6 +156,11 @@ Search.appendIndex(
             "summary": "Voegt\u0020\u00E9\u00E9n\u0020exemplaar\u0020van\u0020een\u0020boek\u0020toe\u0020aan\u0020het\u0020mandje.\u0020Bestaan\u0020en\u0020voorraad\u0020worden\u0020hier\u0020niet\ngecontroleerd\u003B\u0020dat\u0020doet\u0020de\u0020API\u0020pas\u0020bij\u0020het\u0020reserveren.",
             "url": "classes/App-Http-Controllers-CartController.html#method_add"
         },                {
+            "fqsen": "\\App\\Http\\Controllers\\CartController\u003A\u003Adecrease\u0028\u0029",
+            "name": "decrease",
+            "summary": "Verwijdert\u0020\u00E9\u00E9n\u0020exemplaar\u0020van\u0020een\u0020boek\u0020uit\u0020het\u0020mandje.\u0020Bij\u0020het\u0020laatste\u0020exemplaar\nverdwijnt\u0020het\u0020boek\u0020volledig\u0020uit\u0020het\u0020mandje.",
+            "url": "classes/App-Http-Controllers-CartController.html#method_decrease"
+        },                {
             "fqsen": "\\App\\Http\\Controllers\\CartController\u003A\u003Aremove\u0028\u0029",
             "name": "remove",
             "summary": "Verwijdert\u0020een\u0020boek\u0020volledig\u0020uit\u0020het\u0020mandje,\u0020ongeacht\u0020het\u0020aantal\u0020exemplaren.",
