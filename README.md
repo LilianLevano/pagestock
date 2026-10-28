@@ -416,4 +416,5 @@ Het project werd gebouwd in vier fasen. Elke commit begint met het onderdeel (`B
   - **frontend (Laravel/Blade)**: Controllers heb ik grotendeels zelf geschreven, dan door AI laten herlezen om ze beter te maken. Blade paginas (met Tailwind CSS) werden gegenereerd en door mezelf gecontroleerd en aangepast
   - hulp en correctie bij het opstellen van deze README.
 - De rest van de code heb ik zelf geschreven.
-Links naar de respectieve chats kan ik niet delen aangezien ik "Claud Project" heb gebruikt, waardoor de deling onmogelijk is. (Dit wist ik niet voordat ik het gebruikte)
+
+Links naar de respectieve chats kan ik niet delen aangezien ik "Claude Project" heb gebruikt, waardoor de deling onmogelijk is. (Dit wist ik niet voordat ik het gebruikte)
